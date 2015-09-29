@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="CoderServer" default="buildAll" >
+	
+	<property name="releaseDir" value="../release"/>
+	<property name="buildDir" value="../build" />
+	
+	<target name="buildAll" depends="clean">
+		<antcall target="build-main" />
+		<antcall target="build-plugin-arduino" />
+		<antcall target="build-plugin-cpp" />
+		<antcall target="build-plugin-java" />
+	</target>
+	
+	<target name="clean">
+		<delete dir="${buildDir}" />
+		<delete dir="${releaseDir}" />
+	</target>
+	
+	<target name="build-main">
+		<mkdir dir="${buildDir}/core/classes" />
+		<javac srcdir="." destdir="${buildDir}/core/classes" debug="on" fork="yes" includeantruntime="false">
+			<include name="**/core/**.java" />
+		</javac>
+		<mkdir dir="${releaseDir}" />
+		<jar destfile="${releaseDir}/RemoteProgrammer.jar" basedir="${buildDir}/core/classes">
+		</jar>
+	</target>
+	
+	<target name="build-plugin-arduino">
+		<mkdir dir="${buildDir}/plugin/arduino/classes" />
+		<javac srcdir="." destdir="${buildDir}/plugin/arduino/classes" debug="on" fork="yes" includeantruntime="false">
+			<include name="**/plugin/arduino/**.java" />
+		</javac>
+		<mkdir dir="${releaseDir}/plugins" />
+		<jar destfile="${releaseDir}/plugins/Arduino.jar" basedir="${buildDir}/plugin/arduino/classes">
+		</jar>
+	</target>
+		
+	<target name="build-plugin-cpp">
+		<mkdir dir="${buildDir}/plugin/cpp/classes" />
+		<javac srcdir="." destdir="${buildDir}/plugin/cpp/classes" debug="on" fork="yes" includeantruntime="false">
+			<include name="**/plugin/cpp/**.java" />
+		</javac>
+		<mkdir dir="${releaseDir}/plugins" />
+		<jar destfile="${releaseDir}/plugins/Cpp.jar" basedir="${buildDir}/plugin/cpp/classes">
+		</jar>
+	</target>
+		
+	<target name="build-plugin-java">
+		<mkdir dir="${buildDir}/plugin/java/classes" />
+		<javac srcdir="." destdir="${buildDir}/plugin/java/classes" debug="on" fork="yes" includeantruntime="false">
+			<include name="**/plugin/java/**.java" />
+		</javac>
+		<mkdir dir="${releaseDir}/plugins" />
+		<jar destfile="${releaseDir}/plugins/Java.jar" basedir="${buildDir}/plugin/java/classes">
+		</jar>
+	</target>
+	
+</project>
