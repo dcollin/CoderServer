@@ -6,6 +6,11 @@ import com.coder.server.plugin.CoderProjectType;
 public class ArdunioProjectType implements CoderProjectType {
 
 	@Override
+	public void init() {
+
+	}
+	
+	@Override
 	public String getName() {
 		return null;
 	}
@@ -17,17 +22,12 @@ public class ArdunioProjectType implements CoderProjectType {
 
 	@Override
 	public Project createProject() {
-		return null;
+		return new ArduinoProject();
 	}
 
 	@Override
 	public Project loadProject(String name) {
 		return null;
-	}
-
-	@Override
-	public void init() {
-		
 	}
 	
 }
