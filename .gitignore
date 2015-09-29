@@ -1,0 +1,10 @@
+
+# Eclipse project files and folders
+.classpath
+.project
+.settings/*
+bin/*
+
+# Build structure for the ANT script
+build/*
+release/*
