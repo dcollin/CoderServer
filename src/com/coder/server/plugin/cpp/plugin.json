@@ -1,8 +1,8 @@
 {
-        version = 1.0,
-        name = "Arduino Coder Plugin"
-        interfaces = [
-                {"com.coder.server.plugin.CoderProjectType" = "com.coder.server.plugin.cpp.CppProject"},
-                {"com.coder.server.plugin.CoderCompiler" = "com.coder.server.plugin.cpp.CppCompiler"}
+        "version": 1.0,
+        "name": "Java Coder Plugin",
+        "interfaces": [
+                {"com.coder.server.plugin.CoderProjectType": "com.coder.server.plugin.cpp.CppProject"},
+                {"com.coder.server.plugin.CoderCompiler": "com.coder.server.plugin.cpp.CppCompiler"}
         ]
 }

@@ -1,4 +1,4 @@
-package com.coder.server;
+package com.coder.server.struct;
 
 import com.coder.server.plugin.CoderCompiler;
 import com.coder.server.plugin.CoderProjectType;

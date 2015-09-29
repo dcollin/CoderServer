@@ -1,18 +1,18 @@
 package com.coder.server.plugin.arduino;
 
-import com.coder.server.Project;
+import com.coder.server.struct.Project;
 import com.coder.server.plugin.CoderProjectType;
 
 public class ArdunioProjectType implements CoderProjectType {
 
 	@Override
+	public String getName() {
+		return "Arduino";
+	}
+
+	@Override
 	public void init() {
 
-	}
-	
-	@Override
-	public String getName() {
-		return null;
 	}
 
 	@Override

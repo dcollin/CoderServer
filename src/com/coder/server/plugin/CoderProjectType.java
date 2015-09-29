@@ -1,6 +1,6 @@
 package com.coder.server.plugin;
 
-import com.coder.server.Project;
+import com.coder.server.struct.Project;
 
 /**
  * Plugin interface

@@ -2,6 +2,7 @@
 # Eclipse project files and folders
 .classpath
 .project
+.idea
 .settings/*
 bin/*
 

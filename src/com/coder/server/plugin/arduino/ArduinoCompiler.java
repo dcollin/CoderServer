@@ -1,12 +1,14 @@
 package com.coder.server.plugin.arduino;
 
-import java.io.File;
-import java.util.HashMap;
-
-import com.coder.server.Project;
+import com.coder.server.struct.Project;
 import com.coder.server.plugin.CoderCompiler;
 
 public class ArduinoCompiler implements CoderCompiler {
+
+	@Override
+	public String getName() {
+		return "Arduino";
+	}
 
 	@Override
 	public void init() {
