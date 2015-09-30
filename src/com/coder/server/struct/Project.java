@@ -1,22 +1,35 @@
 package com.coder.server.struct;
 
+import java.io.File;
+
 import com.coder.server.plugin.CoderCompiler;
 import com.coder.server.plugin.CoderProjectType;
 
 public abstract class Project {
-	String name = null;
-	CoderProjectType projectType = null;
-	CoderCompiler compiler = null;
+	private String name = null;
+	private CoderProjectType projectType = null;
+	private CoderCompiler compiler = null;
 	
-	public Project(){
-		
+	public Project(String name, CoderProjectType projectType, CoderCompiler projectCompiler){
+		this.name = name;
+		this.projectType = projectType;
+		this.compiler = projectCompiler;
 	}
 	
-	public String[] getFileList(){
+	public File[] getFileList(){
 		return null;
 	}
 	
-	CoderProjectType getProjectType(){
+	public CoderProjectType getProjectType(){
 		return projectType;
 	}
+	
+	public String getName(){
+		return this.name;
+	}
+	
+	public CoderCompiler getCompiler(){
+		return this.compiler;
+	}
+	
 }

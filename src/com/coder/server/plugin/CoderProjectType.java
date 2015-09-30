@@ -8,7 +8,7 @@ import com.coder.server.struct.Project;
 public interface CoderProjectType {
 	public void init();
 	public String getName();
-	public String getArchitecture();
-	public Project createProject();
+	public String[] getSupportedArchitectures();
+	public Project createProject(String name);
 	public Project loadProject(String name);
 }

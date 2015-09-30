@@ -1,12 +1,10 @@
 package com.coder.server;
 
-import com.coder.server.plugin.CoderCompiler;
 import com.coder.server.plugin.CoderProjectType;
 import com.coder.server.struct.User;
 import zutil.log.CompactLogFormatter;
 import zutil.log.LogUtil;
 import zutil.net.ssdp.SSDPServer;
-import zutil.net.ssdp.SSDPServiceInfo;
 import zutil.net.ssdp.StandardSSDPInfo;
 import zutil.net.threaded.ThreadedTCPNetworkServer;
 import zutil.net.threaded.ThreadedTCPNetworkServerThread;
@@ -26,7 +24,6 @@ public class CoderServer extends ThreadedTCPNetworkServer{
 
     private static HashMap<String, User> users = new HashMap<>();
     private static HashMap<String,CoderProjectType> projectTypes = new HashMap<>();
-    private static HashMap<String,CoderCompiler> compilers = new HashMap<>();
 
 
     public static void main(String[] args){
@@ -41,10 +38,6 @@ public class CoderServer extends ThreadedTCPNetworkServer{
                 for(Iterator<CoderProjectType> it = plugin.getIterator(CoderProjectType.class); it.hasNext();){
                     CoderProjectType p = it.next();
                     projectTypes.put(p.getName(), p);
-                }
-                for(Iterator<CoderCompiler> it = plugin.getIterator(CoderCompiler.class); it.hasNext();){
-                    CoderCompiler c = it.next();
-                    compilers.put(c.getName(), c);
                 }
             }
 
