@@ -6,6 +6,8 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.HashMap;
 
+import com.coder.server.plugin.CompileStatusListener;
+import com.coder.server.plugin.ExecInstance;
 import com.coder.server.struct.Project;
 import com.coder.server.plugin.CoderCompiler;
 import com.coder.server.util.OSAbstractionLayer;
@@ -15,7 +17,8 @@ public class ArduinoCompiler implements CoderCompiler {
 
 	private HashMap<File, Long> lastModificationTimeMap;
 	private ExtendedProperties compileProperties;
-	
+
+
 	private enum CompileStatus{
 		COMPILE_SUCCESS,	//the file was compiled
 		COMPILE_SKIPPED,	//the file has not been changed and has already been compiled earlier
@@ -36,7 +39,6 @@ public class ArduinoCompiler implements CoderCompiler {
 	/* (non-Javadoc)
 	 * @see com.coder.server.plugin.CoderCompiler#compile(com.coder.server.struct.Project, java.io.Writer)
 	 */
-	@Override
 	public boolean compile(Project proj, Writer out) {
 		PrintWriter printOut = new PrintWriter(out);
 		printOut.println("VERIFYING SKETCH...");
@@ -91,7 +93,6 @@ public class ArduinoCompiler implements CoderCompiler {
 	/* (non-Javadoc)
 	 * @see com.coder.server.plugin.CoderCompiler#run(com.coder.server.struct.Project, java.io.Writer, java.io.Reader)
 	 */
-	@Override
 	public void run(Project proj, Writer out, Reader in) {
 		PrintWriter printOut = new PrintWriter(out);
 		
@@ -180,4 +181,14 @@ public class ArduinoCompiler implements CoderCompiler {
 		return CompileStatus.COMPILE_SUCCESS;
 	}
 
+
+	@Override
+	public boolean compile(CompileStatusListener listener) {
+		return false;
+	}
+
+	@Override
+	public ExecInstance createExecInstance() {
+		return null;
+	}
 }

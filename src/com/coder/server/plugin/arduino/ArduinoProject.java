@@ -2,6 +2,8 @@ package com.coder.server.plugin.arduino;
 
 import com.coder.server.plugin.CoderCompiler;
 import com.coder.server.plugin.CoderProjectType;
+import com.coder.server.plugin.CompileStatusListener;
+import com.coder.server.plugin.ExecInstance;
 import com.coder.server.plugin.arduino.struct.Board;
 import com.coder.server.struct.Project;
 import com.coder.server.util.ExtendedProperties;
@@ -10,10 +12,12 @@ public class ArduinoProject extends Project {
 	
 	private Board targetBoard;
 	private String targetPort;
+	private CoderCompiler compiler;
 	private ExtendedProperties projectProperties = new ExtendedProperties();
 	
 	public ArduinoProject(String name, CoderProjectType projectType, CoderCompiler compiler){
-		super(name, projectType, compiler);
+		super(name, projectType);
+		this.compiler = compiler;
 		projectProperties.setProperty("build.project_name", name+".cpp");
 	}
 	
@@ -22,7 +26,6 @@ public class ArduinoProject extends Project {
 	 */
 	public ExtendedProperties getBuildProperties(){
 		//get compiler properties
-		CoderCompiler compiler = getCompiler();
 		if( (compiler instanceof ArduinoCompiler) == false ){
 			return null;
 		}
@@ -47,5 +50,14 @@ public class ArduinoProject extends Project {
 		ExtendedProperties buildProperties = ExtendedProperties.combine(projectTypeProperties, this.projectProperties, compilerProperties, targetBoardProperties);
 		return buildProperties;
 	}
-		
+
+	@Override
+	public boolean compile(CompileStatusListener listener) {
+		return false;
+	}
+
+	@Override
+	public ExecInstance createExecInstance() {
+		return null;
+	}
 }
