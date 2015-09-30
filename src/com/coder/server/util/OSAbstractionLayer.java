@@ -9,7 +9,10 @@ import java.io.Reader;
 import java.io.Writer;
 
 public abstract class OSAbstractionLayer {
-    
+
+    public static int executeCommand(String cmd, Writer out){
+        return executeCommand(cmd, out, null);
+    }
     /**
      * @param cmd The command to run
      * @param out The output from the executing command will be written here
@@ -21,20 +24,20 @@ public abstract class OSAbstractionLayer {
         try {
             Runtime runtime = Runtime.getRuntime();
             Process proc = runtime.exec(cmd);
-            
+
             BufferedReader procOutput = new BufferedReader(new InputStreamReader(proc.getInputStream()));
             BufferedWriter procInput = new BufferedWriter(new OutputStreamWriter(proc.getOutputStream()));
-            if(proc.isAlive()){
-            	if(out != null){
-            		if(procOutput.ready()){
-                    	out.write(procOutput.read());
-                    }
-            	}
-            	if(in != null){
-            		if(in.ready()){
-            			procInput.write(in.read());
-            		}
-            	}
+            boolean dataAvailable = true;
+            while(dataAvailable){
+                dataAvailable = false;
+            	while(out != null && procOutput.ready()) {
+                    out.write(procOutput.read());
+                    dataAvailable = true;
+                }
+            	while(in != null && in.ready()) {
+                    procInput.write(in.read());
+                    dataAvailable = true;
+                }
             }
             
             exitCode = proc.waitFor();
