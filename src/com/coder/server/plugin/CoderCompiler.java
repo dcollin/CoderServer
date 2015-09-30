@@ -6,22 +6,15 @@ import java.io.Writer;
 import com.coder.server.struct.Project;
 
 public interface CoderCompiler {
-	
-	public void init();
-	
+		
 	/**
-	 * Compile the project
-	 * @param proj The project to compile
-	 * @param out The output from the compilation
+	 * Compile the project (blocking)
 	 * @return true if the compilation went well, else false
 	 */
-	public boolean compile(Project proj, Writer out);
+	public boolean compile(CompileStatusListener listener);
 	
 	/**
-	 * Run the compiled code.
-	 * @param proj The project to run
-	 * @param out The output from the running binary
-	 * @param in The input to the running binary
-	 */
-	public void run(Project proj, Writer out, Reader in);
+	 * (non-blocking)
+     */
+	public ExecInstance createExecInstance();
 }

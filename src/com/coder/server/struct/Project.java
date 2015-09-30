@@ -5,15 +5,13 @@ import java.io.File;
 import com.coder.server.plugin.CoderCompiler;
 import com.coder.server.plugin.CoderProjectType;
 
-public abstract class Project {
+public abstract class Project implements CoderCompiler {
 	private String name = null;
 	private CoderProjectType projectType = null;
-	private CoderCompiler compiler = null;
 	
-	public Project(String name, CoderProjectType projectType, CoderCompiler projectCompiler){
+	public Project(String name, CoderProjectType projectType){
 		this.name = name;
 		this.projectType = projectType;
-		this.compiler = projectCompiler;
 	}
 	
 	public File[] getFileList(){
@@ -26,10 +24,6 @@ public abstract class Project {
 	
 	public String getName(){
 		return this.name;
-	}
-	
-	public CoderCompiler getCompiler(){
-		return this.compiler;
 	}
 	
 }

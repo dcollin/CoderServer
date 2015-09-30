@@ -25,13 +25,11 @@ public class ArduinoProjectType implements CoderProjectType {
 
 	@Override
 	public Project createProject(String name) {
-		ArduinoCompiler compiler = new ArduinoCompiler();
-		compiler.init();
-		return new ArduinoProject(name, this, compiler);
+		return new ArduinoProject(name, this, new ArduinoCompiler());
 	}
 
 	@Override
-	public Project loadProject(String name) {
+	public Project getProject(String name) {
 		return null;
 	}
 	

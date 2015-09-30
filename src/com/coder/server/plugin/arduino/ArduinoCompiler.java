@@ -28,12 +28,6 @@ public class ArduinoCompiler implements CoderCompiler {
 		lastModificationTimeMap = new HashMap<File, Long>();
 		compileProperties = new ExtendedProperties();
 	}
-
-	@Override
-	public void init() {
-		//set compiler specific properties
-		//TODO
-	}
 	
 	public ExtendedProperties getProperties(){
 		return this.compileProperties;
@@ -57,7 +51,7 @@ public class ArduinoCompiler implements CoderCompiler {
 		//TODO
 		
 		//build sketch file
-		File sketchFile = new File(buildProperies.getProperty("{build_path}/{build.project_name}"));
+		File sketchFile = new File(buildProperies.resolveString("{build_path}/{build.project_name}"));
 		CompileStatus buildStatus = compileFile(sketchFile, buildProperies, out);
 		if(buildStatus != CompileStatus.COMPILE_SUCCESS){
 			return false;

@@ -10,5 +10,5 @@ public interface CoderProjectType {
 	public String getName();
 	public String[] getSupportedArchitectures();
 	public Project createProject(String name);
-	public Project loadProject(String name);
+	public Project getProject(String name);
 }
