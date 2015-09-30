@@ -8,6 +8,10 @@ public class User {
     private String passwordHash;
 
 
+    public User(String username){
+        this.username = username;
+    }
+
 
     public String getUsername() {
         return username;

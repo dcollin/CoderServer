@@ -22,7 +22,6 @@ public class CoderServer extends ThreadedTCPNetworkServer{
     public static final Logger log = LogUtil.getLogger();
     public static final int SERVER_PORT = 1337;
 
-    private static HashMap<String, User> users = new HashMap<>();
     private static HashMap<String,CoderProjectType> projectTypes = new HashMap<>();
 
 
@@ -40,6 +39,12 @@ public class CoderServer extends ThreadedTCPNetworkServer{
                     projectTypes.put(p.getName(), p);
                 }
             }
+
+            /********* LOAD DATA **********/
+            // TODO: add actual database/file setup
+            UserManager.initialize();
+            UserManager.getInstance().addUser(new User("ziver"));
+            UserManager.getInstance().addUser(new User("daniel"));
 
             /************ JSON ************/
             log.info("Starting up JSON server...");
@@ -75,10 +80,5 @@ public class CoderServer extends ThreadedTCPNetworkServer{
             log.log(Level.SEVERE, null, e);
         }
         return null;
-    }
-
-
-    public static User getUser(String userName){
-        return users.get(userName);
     }
 }
