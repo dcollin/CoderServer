@@ -12,4 +12,3 @@ bin/*
 # Build structure for the ANT script
 build/*
 release/*
-test/*
