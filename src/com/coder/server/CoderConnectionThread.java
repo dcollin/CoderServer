@@ -33,7 +33,7 @@ public class CoderConnectionThread implements ThreadedTCPNetworkServerThread {
             this.out = new BufferedWriter(new OutputStreamWriter(
                     crypto.encrypt(socket.getOutputStream())));
 
-            // TODO: start parsing incomming messages from client
+            // TODO: start parsing incoming messages from client
         }catch (Exception e){
             logger.log(Level.SEVERE, "Client Connection issue", e);
             try {
