@@ -2,9 +2,12 @@
 # Eclipse project files and folders
 .classpath
 .project
-.idea
 .settings/*
 bin/*
+
+# IntellIj project files and folders
+.idea
+*.iml
 
 # Build structure for the ANT script
 build/*
