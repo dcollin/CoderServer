@@ -61,6 +61,12 @@
 	
 	<!-- ________________________ PUBLIC TARGETS ________________________ -->
 	
+	<!--build release and run-->
+	<target name="run" depends="buildRelease">
+		<java jar="${releaseDir}/CoderServer.jar" fork="true" failonerror="true" dir="${releaseDir}">
+		</java>
+	</target>
+	
 	<!--build all target code and create .jar files -->
 	<target name="buildRelease" depends="buildAll">
 		<!--create release dir-->
@@ -185,6 +191,11 @@
 			<include name="**/${arduinoPackage}/**.java" />
 			<classpath refid="classpath.build" />
 		</javac>
+		<copy todir="${arduinoBuildDir}">
+		    <fileset dir="${srcDir}">
+				<include name="**/${arduinoPackage}/*.json"/>
+		    </fileset>
+		</copy>
 	</target>
 	
 	<!--build product- and test code-->
@@ -236,6 +247,11 @@
 			<include name="**/${cppPackage}/**.java" />
 			<classpath refid="classpath.build" />
 		</javac>
+		<copy todir="${cppBuildDir}">
+		    <fileset dir="${srcDir}">
+				<include name="**/${cppPackage}/*.json"/>
+		    </fileset>
+		</copy>
 	</target>
 	
 	<!--build product- and test code-->
@@ -287,6 +303,11 @@
 			<include name="**/${javaPackage}/**.java" />
 			<classpath refid="classpath.build" />
 		</javac>
+		<copy todir="${javaBuildDir}">
+		    <fileset dir="${srcDir}">
+				<include name="**/${javaPackage}/*.json"/>
+		    </fileset>
+		</copy>
 	</target>
 	
 	<!--build product- and test code-->
