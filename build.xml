@@ -81,16 +81,16 @@
 		<copy todir="${releaseDir}/lib" flatten="true">
 			<path refid="classpath.build" />
 		</copy>
+		<!--add startup script file to release dir-->
+		<copy file="${srcDir}/start.sh" todir="${releaseDir}" />
+		<!--make startup script file executable-->
+		<chmod file="${releaseDir}/start.sh" perm="u+x" />
 		<!--build product jar-->
 		<antcall target="build-coder-server-jar" />
 		<!--build plugins-->
 		<antcall target="build-plugin-arduino-jar" />
 		<antcall target="build-plugin-cpp-jar" />
 		<antcall target="build-plugin-java-jar" />
-		<!--add startup script file to release dir-->
-		<copy file="${srcDir}/start.sh" todir="${releaseDir}" />
-		<!--make startup script file executable-->
-		<chmod file="${releaseDir}/start.sh" perm="u+x" />
 	</target>
 	
 	<!--build all product code-->
