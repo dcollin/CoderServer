@@ -82,9 +82,11 @@
 			<path refid="classpath.build" />
 		</copy>
 		<!--add startup script file to release dir-->
-		<copy file="${srcDir}/start.sh" todir="${releaseDir}" />
+		<copy file="${gitRoot}/start.sh" todir="${releaseDir}" />
+		<copy file="${gitRoot}/start.bat" todir="${releaseDir}" />
 		<!--make startup script file executable-->
 		<chmod file="${releaseDir}/start.sh" perm="u+x" />
+		<chmod file="${releaseDir}/start.bat" perm="u+x" />
 		<!--build product jar-->
 		<antcall target="build-coder-server-jar" />
 		<!--build plugins-->
