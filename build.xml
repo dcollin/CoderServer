@@ -170,6 +170,9 @@
 		<jar destfile="${arduinoJar}" baseDir="${arduinoBuildDir}">
 			<manifest>
 				<attribute name="Class-path" value="lib/Zutil.jar" />
+				<attribute name="Implementation-Title" value="${title}/ArduinoPlugin" />
+				<attribute name="Implementation-Version" value="${version} (${repository.version}) (${build-type})" />
+				<attribute name="Implementation-Vendor" value="${vendor}" />
 			</manifest>
 		</jar>
 	</target>
@@ -218,6 +221,9 @@
 		<jar destfile="${cppJar}" baseDir="${cppBuildDir}">
 			<manifest>
 				<attribute name="Class-path" value="lib/Zutil.jar" />
+				<attribute name="Implementation-Title" value="${title}/CppPlugin" />
+				<attribute name="Implementation-Version" value="${version} (${repository.version}) (${build-type})" />
+				<attribute name="Implementation-Vendor" value="${vendor}" />
 			</manifest>
 		</jar>
 	</target>
@@ -266,6 +272,9 @@
 		<jar destfile="${javaJar}" baseDir="${javaBuildDir}">
 			<manifest>
 				<attribute name="Class-path" value="lib/Zutil.jar" />
+				<attribute name="Implementation-Title" value="${title}/JavaPlugin" />
+				<attribute name="Implementation-Version" value="${version} (${repository.version}) (${build-type})" />
+				<attribute name="Implementation-Vendor" value="${vendor}" />
 			</manifest>
 		</jar>
 	</target>
@@ -323,6 +332,7 @@
 				<length string="${git.revision}" trim="yes" length="0" when="greater" />
 			</and>
 		</condition>
+		<echo message="Current commit SHA is ${git.revision}" />
 	</target>
 	
 	
