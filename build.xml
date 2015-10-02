@@ -68,7 +68,7 @@
 		<!--copy licence file to release dir-->
 		<copy file="${gitRoot}/licence.txt" todir="${releaseDir}" />
 		<!--copy readme file to release dir-->
-		<copy file="${gitRoot}/readme.txt" todir="${releaseDir}" />
+		<copy file="${gitRoot}/README.md" todir="${releaseDir}" />
 		<!--create release/lib dir-->
 		<mkdir dir="${releaseDir}/lib" />
 		<!--copy libs to release/lib dir-->
