@@ -1,2 +1,2 @@
 @echo off
-java -cp "plugins/*;." -jar CoderServer.jar 
+java -cp ".\*;lib\*;plugins\*" com.coder.server.CoderServer
