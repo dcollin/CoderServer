@@ -3,14 +3,22 @@ package com.coder.server.plugin;
 /**
  * Created by Ziver on 2015-09-30.
  */
-public interface ExecInstance {
+public abstract class ExecInstance {
 
-    public void setExecListener(ExecListener listener);
+	private ExecListener listener = null;
+	
+    public void setExecListener(ExecListener listener){
+    	this.listener = listener;
+    }
+    
+    public ExecListener getExecListener(){
+    	return this.listener;
+    }
 
-    public void exec();
+    public abstract void exec();
 
-    public void send(String line);
+    public abstract void send(String line);
 
-    public boolean isRunning();
+    public abstract boolean isRunning();
 
 }

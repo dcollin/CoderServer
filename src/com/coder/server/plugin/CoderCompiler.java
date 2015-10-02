@@ -1,10 +1,5 @@
 package com.coder.server.plugin;
 
-import java.io.Reader;
-import java.io.Writer;
-
-import com.coder.server.struct.Project;
-
 public interface CoderCompiler {
 		
 	/**

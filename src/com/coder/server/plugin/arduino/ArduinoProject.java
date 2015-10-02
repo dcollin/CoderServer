@@ -1,6 +1,5 @@
 package com.coder.server.plugin.arduino;
 
-import com.coder.server.plugin.CoderCompiler;
 import com.coder.server.plugin.CoderProjectType;
 import com.coder.server.plugin.CompileStatusListener;
 import com.coder.server.plugin.ExecInstance;
@@ -12,12 +11,13 @@ public class ArduinoProject extends Project {
 	
 	private Board targetBoard;
 	private String targetPort;
-	private CoderCompiler compiler;
-	private ExtendedProperties projectProperties = new ExtendedProperties();
+	private ArduinoCompiler compiler;
+	private ExtendedProperties projectProperties;
 	
-	public ArduinoProject(String name, CoderProjectType projectType, CoderCompiler compiler){
+	public ArduinoProject(String name, CoderProjectType projectType, ArduinoCompiler compiler){
 		super(name, projectType);
 		this.compiler = compiler;
+		projectProperties = new ExtendedProperties();
 		projectProperties.setProperty("build.project_name", name+".cpp");
 	}
 	
@@ -26,11 +26,10 @@ public class ArduinoProject extends Project {
 	 */
 	public ExtendedProperties getBuildProperties(){
 		//get compiler properties
-		if( (compiler instanceof ArduinoCompiler) == false ){
+		if(compiler == null){
 			return null;
 		}
-		ArduinoCompiler arduinoCompiler = (ArduinoCompiler)compiler;
-		ExtendedProperties compilerProperties = arduinoCompiler.getProperties();
+		ExtendedProperties compilerProperties = compiler.getProperties();
 		
 		//get target board properties
 		if(targetBoard == null){
@@ -38,9 +37,14 @@ public class ArduinoProject extends Project {
 		}
 		ExtendedProperties targetBoardProperties = this.targetBoard.getProperties();
 		
+		//get project properties
+		if(this.projectProperties == null){
+			return null;
+		}
+		
 		//get project type properties
 		CoderProjectType projectType = getProjectType();
-		if( (projectType instanceof ArduinoProjectType) == false){
+		if( projectType == null || ((projectType instanceof ArduinoProjectType) == false) ){
 			return null;
 		}
 		ArduinoProjectType arduinoProjectType = (ArduinoProjectType)projectType;
@@ -53,11 +57,15 @@ public class ArduinoProject extends Project {
 
 	@Override
 	public boolean compile(CompileStatusListener listener) {
-		return false;
+		return this.compiler.compile(this, listener);
 	}
 
 	@Override
 	public ExecInstance createExecInstance() {
-		return null;
+		return this.compiler.createExecInstance(this);
+	}
+
+	public String getTargetPort() {
+		return this.targetPort;
 	}
 }

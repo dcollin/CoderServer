@@ -1,19 +1,15 @@
 package com.coder.server.plugin.arduino;
 
 import java.io.File;
-import java.io.PrintWriter;
-import java.io.Reader;
-import java.io.Writer;
 import java.util.HashMap;
 
 import com.coder.server.plugin.CompileStatusListener;
 import com.coder.server.plugin.ExecInstance;
 import com.coder.server.struct.Project;
-import com.coder.server.plugin.CoderCompiler;
 import com.coder.server.util.OSAbstractionLayer;
 import com.coder.server.util.ExtendedProperties;
 
-public class ArduinoCompiler implements CoderCompiler {
+public class ArduinoCompiler {
 
 	private HashMap<File, Long> lastModificationTimeMap;
 	private ExtendedProperties compileProperties;
@@ -39,9 +35,8 @@ public class ArduinoCompiler implements CoderCompiler {
 	/* (non-Javadoc)
 	 * @see com.coder.server.plugin.CoderCompiler#compile(com.coder.server.struct.Project, java.io.Writer)
 	 */
-	public boolean compile(Project proj, Writer out) {
-		PrintWriter printOut = new PrintWriter(out);
-		printOut.println("VERIFYING SKETCH...");
+	public boolean compile(Project proj, CompileStatusListener listener) {
+		listener.compileLog("VERIFYING SKETCH...");
 		
 		if( (proj instanceof ArduinoProject) == false){
 			return false; 
@@ -54,7 +49,7 @@ public class ArduinoCompiler implements CoderCompiler {
 		
 		//build sketch file
 		File sketchFile = new File(buildProperies.resolveString("{build_path}/{build.project_name}"));
-		CompileStatus buildStatus = compileFile(sketchFile, buildProperies, out);
+		CompileStatus buildStatus = compileFile(sketchFile, buildProperies, listener);
 		if(buildStatus != CompileStatus.COMPILE_SUCCESS){
 			return false;
 		}
@@ -65,7 +60,7 @@ public class ArduinoCompiler implements CoderCompiler {
 		//build archive
 		String archiveDirPath = buildProperies.resolveString("{runtime.platform.path}/hardware/{board.vendor}/{board.architecture}/cores/{build.core}/");
 		buildProperies.setProperty("archive_file", "core.a");
-		buildStatus = buildArchive(archiveDirPath, buildProperies, out);
+		buildStatus = buildArchive(archiveDirPath, buildProperies, listener);
 		if(buildStatus == CompileStatus.COMPILE_FAILED){
 			return false;
 		}else if(buildStatus == CompileStatus.FILE_NOT_EXISTS){
@@ -73,33 +68,33 @@ public class ArduinoCompiler implements CoderCompiler {
 		}
 		
 		//link
-		if(OSAbstractionLayer.executeCommand(buildProperies.getProperty("recipe.c.combine.pattern"), out, null) != 0){
+		if(executeCommand(buildProperies.getProperty("recipe.c.combine.pattern"), listener) != 0){
 			return false;
 		}
-		if(OSAbstractionLayer.executeCommand(buildProperies.getProperty("recipe.objcopy.eep.pattern"), out, null) != 0){
+		if(executeCommand(buildProperies.getProperty("recipe.objcopy.eep.pattern"), listener) != 0){
 			return false;
 		}
-		if(OSAbstractionLayer.executeCommand(buildProperies.getProperty("recipe.objcopy.hex.pattern"), out, null) != 0){
+		if(executeCommand(buildProperies.getProperty("recipe.objcopy.hex.pattern"), listener) != 0){
 			return false;
 		}
 		
 		//calculate size of built file
 		//TODO
 		
-		printOut.println("VERIFYING DONE");
+		listener.compileLog("VERIFYING DONE");
 		return true;
 	}
 
 	/* (non-Javadoc)
 	 * @see com.coder.server.plugin.CoderCompiler#run(com.coder.server.struct.Project, java.io.Writer, java.io.Reader)
 	 */
-	public void run(Project proj, Writer out, Reader in) {
-		PrintWriter printOut = new PrintWriter(out);
-		
-		
+	public ExecInstance createExecInstance(ArduinoProject proj) {
+		String port = proj.getTargetPort();
+		ArduinoExecInstance execInstance = new ArduinoExecInstance(this, port);
+		return execInstance;
 	}
 	
-	private CompileStatus buildArchive(String archiveDirPath, ExtendedProperties buildProperies, Writer out){
+	private CompileStatus buildArchive(String archiveDirPath, ExtendedProperties buildProperies, CompileStatusListener listener){
 		//get the build properties from the project
 		
 		File archiveSourceFolder = new File(archiveDirPath);
@@ -113,7 +108,7 @@ public class ArduinoCompiler implements CoderCompiler {
 		boolean fileRecompiled = false;
 		for(File sourceFile : archiveSourceFolder.listFiles()){
 			if(sourceFile.isFile()){
-				CompileStatus status = compileFile(sourceFile, buildProperies, out);
+				CompileStatus status = compileFile(sourceFile, buildProperies, listener);
 				switch(status){
 					case FILE_NOT_EXISTS:
 					case COMPILE_FAILED:
@@ -132,7 +127,7 @@ public class ArduinoCompiler implements CoderCompiler {
 			for(File sourceFile : archiveSourceFolder.listFiles()){
 				if(sourceFile.isFile()){
 					buildProperies.setProperty("object_file", "{build.path}/"+sourceFile.getName()+".o");
-					int exitCode = OSAbstractionLayer.executeCommand(buildProperies.getProperty("recipe.ar.pattern"), out, null);
+					int exitCode = executeCommand(buildProperies.getProperty("recipe.ar.pattern"), listener);
 					if(exitCode != 0){
 						return CompileStatus.COMPILE_FAILED;
 					}
@@ -145,7 +140,7 @@ public class ArduinoCompiler implements CoderCompiler {
 		return CompileStatus.COMPILE_SUCCESS;
 	}
 	
-	private CompileStatus compileFile(File sourceFile, ExtendedProperties buildProperies, Writer out){
+	private CompileStatus compileFile(File sourceFile, ExtendedProperties buildProperies, CompileStatusListener listener){
 		buildProperies.setProperty("source_file", sourceFile.getAbsolutePath());
 		buildProperies.setProperty("object_file", "{build.path}/"+sourceFile.getName()+".o");
 		
@@ -164,11 +159,11 @@ public class ArduinoCompiler implements CoderCompiler {
 		//compile the source file
 		int exitCode = 0;
 		if(sourceFile.getName().endsWith(".S")){
-			exitCode = OSAbstractionLayer.executeCommand(buildProperies.getProperty("recipe.S.o.pattern"), out, null);
+			exitCode = executeCommand(buildProperies.getProperty("recipe.S.o.pattern"), listener);
 		}else if(sourceFile.getName().endsWith(".c")){
-			exitCode = OSAbstractionLayer.executeCommand(buildProperies.getProperty("recipe.c.o.pattern"), out, null);
+			exitCode = executeCommand(buildProperies.getProperty("recipe.c.o.pattern"), listener);
 		}else if(sourceFile.getName().endsWith(".cpp")){
-			exitCode = OSAbstractionLayer.executeCommand(buildProperies.getProperty("recipe.cpp.o.pattern"), out, null);
+			exitCode = executeCommand(buildProperies.getProperty("recipe.cpp.o.pattern"), listener);
 		}else{
 			return CompileStatus.FILE_NOT_SOURCE_FILE;
 		}
@@ -180,15 +175,11 @@ public class ArduinoCompiler implements CoderCompiler {
 		lastModificationTimeMap.put(sourceFile, sourceFile.lastModified());
 		return CompileStatus.COMPILE_SUCCESS;
 	}
-
-
-	@Override
-	public boolean compile(CompileStatusListener listener) {
-		return false;
+	
+	private int executeCommand(String cmd, CompileStatusListener listener){
+		int exitCode = 0;
+		exitCode = OSAbstractionLayer.executeCommand(cmd, null, null);
+		return exitCode;
 	}
 
-	@Override
-	public ExecInstance createExecInstance() {
-		return null;
-	}
 }
