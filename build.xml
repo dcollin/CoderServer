@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="CoderServer" default="buildRelease" >
+	
+	<!-- ________________________ PROPERTIES AND SETTINGS ________________________ -->
+	
+	<property name="version" value="0.1b" />
+	<property name="title" value="CoderServer" />
+	<property name="vendor" value="" />
+	<property name="build-type" value="black" />
+	
+	<!--common properties-->
+	<property name="gitRoot" value="." />
+	<property name="releaseDir" value="${gitRoot}/release"/>
+	<property name="srcDir" value="${gitRoot}/src" />
+	<property name="libDir" value="${gitRoot}/lib" />
+	<property name="buildDir" value="${gitRoot}/build" />
+	<property name="testDir" value="${gitRoot}/test" />
+	<property name="pluginDir" value="${releaseDir}/plugins" />
+	
+	<!--CodeServer properties-->
+	<property name="coderServerBuildDir" value="${buildDir}/coderServer/classes" />
+	<property name="coderServerJar" value="${releaseDir}/CoderServer.jar" />
+	<property name="coderServerTestDir" value="${buildDir}/coderServer/testLogs" />
+	<property name="coderServerPackage" value="com/coder/server" />
+	
+	<!--Arduino plugin properties-->
+	<property name="arduinoBuildDir" value="${buildDir}/plugin/arduino/classes" />
+	<property name="arduinoJar" value="${releaseDir}/plugins/Arduino.jar" />
+	<property name="arduinoTestDir" value="${buildDir}/plugin/arduino/testLogs" />
+	<property name="arduinoPackage" value="com/coder/server/plugin/arduino" />
+	
+	<!--Cpp plugin properties-->
+	<property name="cppBuildDir" value="${buildDir}/plugin/cpp/classes" />
+	<property name="cppJar" value="${releaseDir}/plugins/Cpp.jar" />
+	<property name="cppTestDir" value="${buildDir}/plugin/cpp/testLogs" />
+	<property name="cppPackage" value="com/coder/server/plugin/cpp" />
+		
+	<!--Java properties-->
+	<property name="javaBuildDir" value="${buildDir}/plugin/java/classes" />
+	<property name="javaJar" value="${releaseDir}/plugins/Java.jar" />
+	<property name="javaTestDir" value="${buildDir}/plugin/java/testLogs" />
+	<property name="javaPackage" value="com/coder/server/plugin/java" />
+	
+	<!--define standard arduments for javac-->
+	<presetdef name="javac">
+		<javac includeantruntime="false" />
+	</presetdef>
+	
+	<!-- ________________________ CLASSPATHS ________________________ -->
+	
+	<!--classpath included when building for product-->
+	<path id="classpath.test">
+		<pathelement location="${libDir}/junit-4.12.jar" />
+		<path refid="classpath.build"/>
+	</path>
+	
+	<!--classpath included when building for test-->
+	<path id="classpath.build">
+		<pathelement location="${libDir}/Zutil.jar" />
+	</path>
+	
+	<!-- ________________________ PUBLIC TARGETS ________________________ -->
+	
+	<!--build all target code and create .jar files -->
+	<target name="buildRelease" depends="buildAll">
+		<!--create release dir-->
+		<mkdir dir="${releaseDir}" />
+		<!--copy licence file to release dir-->
+		<copy file="${gitRoot}/licence.txt" todir="${releaseDir}" />
+		<!--copy readme file to release dir-->
+		<copy file="${gitRoot}/readme.txt" todir="${releaseDir}" />
+		<!--create release/lib dir-->
+		<mkdir dir="${releaseDir}/lib" />
+		<!--copy libs to release/lib dir-->
+		<copy todir="${releaseDir}/lib" flatten="true">
+			<path refid="classpath.build" />
+		</copy>
+		<!--build product jar-->
+		<antcall target="build-coder-server-jar" />
+		<!--build plugins-->
+		<antcall target="build-plugin-arduino-jar" />
+		<antcall target="build-plugin-cpp-jar" />
+		<antcall target="build-plugin-java-jar" />
+		<!--add startup script file to release dir-->
+		<copy file="${srcDir}/start.sh" todir="${releaseDir}" />
+		<!--make startup script file executable-->
+		<chmod file="${releaseDir}/start.sh" perm="u+x" />
+	</target>
+	
+	<!--build all product code-->
+	<target name="buildAll" depends="clean">
+		<antcall target="build-coder-server" />
+		<antcall target="build-plugin-arduino" />
+		<antcall target="build-plugin-cpp" />
+		<antcall target="build-plugin-java" />
+	</target>
+	
+	<!--build all product- and test code and run all tests -->
+	<target name="testAll" depends="clean">
+		<antcall target="test-coder-server" />
+		<antcall target="test-plugin-arduino" />
+		<antcall target="test-plugin-cpp" />
+		<antcall target="test-plugin-java" />
+	</target>
+	
+	<!--clean all build paths-->
+	<target name="clean">
+		<delete dir="${buildDir}" />
+		<delete dir="${releaseDir}" />
+	</target>
+	
+	<!-- ________________________ CODER SERVER ________________________ -->
+	
+	<!--build product code and create jar file-->
+	<target name="build-coder-server-jar" depends="git.revision">
+		<mkdir dir="${releaseDir}" />
+		<jar destfile="${coderServerJar}" baseDir="${coderServerBuildDir}">
+			<manifest>
+				<attribute name="Main-class" value="com.coder.server.CoderServer" />
+				<attribute name="Class-path" value="lib/Zutil.jar" />
+				<attribute name="Implementation-Title" value="${title}" />
+				<attribute name="Implementation-Version" value="${version} (${repository.version}) (${build-type})" />
+				<attribute name="Implementation-Vendor" value="${vendor}" />
+			</manifest>
+		</jar>
+	</target>
+	
+	<!--build product code-->
+	<target name="build-coder-server">
+		<delete dir="${coderServerBuildDir}" />
+		<mkdir dir="${coderServerBuildDir}" />
+		<javac srcdir="${srcDir}" destdir="${coderServerBuildDir}" fork="yes">
+			<include name="**/*.java" />
+			<exclude name="**/plugin/**" />
+			<classpath refid="classpath.build" />
+		</javac>
+	</target>
+	
+	<!--build product- and test code-->
+	<target name="build-coder-server-test" depends="build-coder-server">
+		<javac srcdir="${testDir}" destdir="${coderServerBuildDir}" fork="yes">
+			<include name="**/${coderServerPackage}/**Test.java" />
+			<classpath refid="classpath.test" />
+		</javac>
+	</target>
+	
+	<!--build product- and test code and run the tests-->
+	<target name="test-coder-server" depends="build-coder-server-test">
+		<delete dir="${coderServerTestDir}" />
+		<mkdir dir="${coderServerTestDir}" />
+		<junit printsummary="yes" showoutput="no" fork="yes" haltonfailure="yes" maxmemory="256m">
+			<classpath>
+				<path refid="classpath.test" />
+				<pathelement location="${coderServerBuildDir}" />
+			</classpath>
+			<formatter type="plain" />
+			<batchtest todir="${coderServerTestDir}">
+				<fileset dir="${coderServerBuildDir}">
+					<include name="**/*Test.class" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+	
+	<!-- ________________________ ARDUINO PLUGIN ________________________ -->
+	
+	<!--build product code and create jar file-->
+	<target name="build-plugin-arduino-jar">
+		<mkdir dir="${pluginDir}" />
+		<jar destfile="${arduinoJar}" baseDir="${arduinoBuildDir}">
+			<manifest>
+				<attribute name="Class-path" value="lib/Zutil.jar" />
+			</manifest>
+		</jar>
+	</target>
+	
+	<!--build product code-->
+	<target name="build-plugin-arduino">
+		<delete dir="${arduinoBuildDir}" />
+		<mkdir dir="${arduinoBuildDir}" />
+		<javac srcdir="${srcDir}" destdir="${arduinoBuildDir}" fork="yes">
+			<include name="**/${arduinoPackage}/**.java" />
+			<classpath refid="classpath.build" />
+		</javac>
+	</target>
+	
+	<!--build product- and test code-->
+	<target name="build-plugin-arduino-test" depends="build-plugin-arduino">
+		<javac srcdir="${testDir}" destdir="${arduinoBuildDir}" fork="yes">
+			<include name="**/${arduinoPackage}/**Test.java" />
+			<classpath refid="classpath.test" />
+		</javac>
+	</target>
+	
+	<!--build product- and test code and run the tests-->
+	<target name="test-plugin-arduino" depends="build-plugin-arduino-test">
+		<delete dir="${arduinoTestDir}" />
+		<mkdir dir="${arduinoTestDir}" />
+		<junit printsummary="yes" showoutput="no" fork="yes" haltonfailure="yes" maxmemory="256m">
+			<classpath>
+				<path refid="classpath.test" />
+				<pathelement location="${arduinoBuildDir}" />
+			</classpath>
+			<formatter type="plain" />
+			<batchtest todir="${arduinoTestDir}">
+				<fileset dir="${arduinoBuildDir}">
+					<include name="**/*Test.class" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+	
+	<!-- ________________________ CPP PLUGIN ________________________ -->
+	
+	<!--build product code and create jar file-->
+	<target name="build-plugin-cpp-jar">
+		<mkdir dir="${pluginDir}" />
+		<jar destfile="${cppJar}" baseDir="${cppBuildDir}">
+			<manifest>
+				<attribute name="Class-path" value="lib/Zutil.jar" />
+			</manifest>
+		</jar>
+	</target>
+	
+	<!--build product code-->
+	<target name="build-plugin-cpp">
+		<delete dir="${cppBuildDir}" />
+		<mkdir dir="${cppBuildDir}" />
+		<javac srcdir="${srcDir}" destdir="${cppBuildDir}" fork="yes">
+			<include name="**/${cppPackage}/**.java" />
+			<classpath refid="classpath.build" />
+		</javac>
+	</target>
+	
+	<!--build product- and test code-->
+	<target name="build-plugin-cpp-test" depends="build-plugin-cpp">
+		<javac srcdir="${testDir}" destdir="${cppBuildDir}" fork="yes">
+			<include name="**/${cppPackage}/**Test.java" />
+			<classpath refid="classpath.test" />
+		</javac>
+	</target>
+	
+	<!--build product- and test code and run the tests-->
+	<target name="test-plugin-cpp" depends="build-plugin-cpp-test">
+		<delete dir="${cppTestDir}" />
+		<mkdir dir="${cppTestDir}" />
+		<junit printsummary="yes" showoutput="no" fork="yes" haltonfailure="yes" maxmemory="256m">
+			<classpath>
+				<path refid="classpath.test" />
+				<pathelement location="${cppBuildDir}" />
+			</classpath>
+			<formatter type="plain" />
+			<batchtest todir="${cppTestDir}">
+				<fileset dir="${cppBuildDir}">
+					<include name="**/*Test.class" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+	
+	<!-- ________________________ JAVA PLUGIN ________________________ -->
+	
+	<!--build product code and create jar file-->
+	<target name="build-plugin-java-jar">
+		<mkdir dir="${pluginDir}" />
+		<jar destfile="${javaJar}" baseDir="${javaBuildDir}">
+			<manifest>
+				<attribute name="Class-path" value="lib/Zutil.jar" />
+			</manifest>
+		</jar>
+	</target>
+	
+	<!--build product code-->
+	<target name="build-plugin-java">
+		<delete dir="${javaBuildDir}" />
+		<mkdir dir="${javaBuildDir}" />
+		<javac srcdir="${testDir}" destdir="${javaBuildDir}" fork="yes">
+			<include name="**/${javaPackage}/**.java" />
+			<classpath refid="classpath.build" />
+		</javac>
+	</target>
+	
+	<!--build product- and test code-->
+	<target name="build-plugin-java-test" depends="build-plugin-java">
+		<javac srcdir="${srcDir}" destdir="${javaBuildDir}" fork="yes">
+			<include name="**/${javaPackage}/**Test.java" />
+			<classpath refid="classpath.test" />
+		</javac>
+	</target>
+	
+	<!--build product- and test code and run the tests-->
+	<target name="test-plugin-java" depends="build-plugin-java-test">
+		<delete dir="${javaTestDir}" />
+		<mkdir dir="${javaTestDir}" />
+		<junit printsummary="yes" showoutput="no" fork="yes" haltonfailure="yes" maxmemory="256m">
+			<classpath>
+				<path refid="classpath.test" />
+				<pathelement location="${javaBuildDir}" />
+			</classpath>
+			<formatter type="plain" />
+			<batchtest todir="${javaTestDir}">
+				<fileset dir="${javaBuildDir}">
+					<include name="**/*Test.class" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+	
+	<!-- ________________________ UTILITY ________________________ -->
+	
+	<!--find the current GIT commit SHA-->
+	<available file="${gitRoot}/.git" type="dir" property="git.present" />
+	<target name="git.revision" if="git.present">
+		<exec executable="git" outputproperty="git.revision" failifexecutionfails="false" errorproperty="">
+			<arg value="describe" />
+			<arg value="--tags" />
+			<arg value="--always" />
+			<arg value="HEAD" />
+		</exec>
+		<condition property="repository.version" value="${git.revision}" else="unknown">
+			<and>
+				<isset property="git.revision" />
+				<length string="${git.revision}" trim="yes" length="0" when="greater" />
+			</and>
+		</condition>
+	</target>
+	
+	
+</project>
