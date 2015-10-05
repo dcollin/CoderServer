@@ -6,11 +6,12 @@ import com.coder.server.plugin.ExecInstance;
 import com.coder.server.plugin.arduino.struct.Board;
 import com.coder.server.struct.Project;
 import com.coder.server.util.ExtendedProperties;
+import com.fazecast.jSerialComm.SerialPort;
 
 public class ArduinoProject extends Project {
 	
 	private Board targetBoard;
-	private String targetPort;
+	private SerialPort targetPort;
 	private ArduinoCompiler compiler;
 	private ExtendedProperties projectProperties;
 	
@@ -65,7 +66,7 @@ public class ArduinoProject extends Project {
 		return this.compiler.createExecInstance(this);
 	}
 
-	public String getTargetPort() {
+	public SerialPort getTargetPort() {
 		return this.targetPort;
 	}
 }

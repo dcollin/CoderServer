@@ -8,6 +8,7 @@ import com.coder.server.plugin.ExecInstance;
 import com.coder.server.struct.Project;
 import com.coder.server.util.OSAbstractionLayer;
 import com.coder.server.util.ExtendedProperties;
+import com.fazecast.jSerialComm.SerialPort;
 
 public class ArduinoCompiler {
 
@@ -36,7 +37,9 @@ public class ArduinoCompiler {
 	 * @see com.coder.server.plugin.CoderCompiler#compile(com.coder.server.struct.Project, java.io.Writer)
 	 */
 	public boolean compile(Project proj, CompileStatusListener listener) {
-		listener.compileLog("VERIFYING SKETCH...");
+		if(listener != null){
+			listener.compileLog("VERIFYING SKETCH...");
+		}
 		
 		if( (proj instanceof ArduinoProject) == false){
 			return false; 
@@ -81,7 +84,9 @@ public class ArduinoCompiler {
 		//calculate size of built file
 		//TODO
 		
-		listener.compileLog("VERIFYING DONE");
+		if(listener != null){
+			listener.compileLog("VERIFYING DONE");
+		}
 		return true;
 	}
 
@@ -89,7 +94,7 @@ public class ArduinoCompiler {
 	 * @see com.coder.server.plugin.CoderCompiler#run(com.coder.server.struct.Project, java.io.Writer, java.io.Reader)
 	 */
 	public ExecInstance createExecInstance(ArduinoProject proj) {
-		String port = proj.getTargetPort();
+		SerialPort port = proj.getTargetPort();
 		ArduinoExecInstance execInstance = new ArduinoExecInstance(this, port);
 		return execInstance;
 	}

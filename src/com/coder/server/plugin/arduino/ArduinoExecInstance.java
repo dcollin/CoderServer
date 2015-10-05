@@ -2,14 +2,15 @@ package com.coder.server.plugin.arduino;
 
 import com.coder.server.plugin.ExecInstance;
 import com.coder.server.plugin.ExecListener;
+import com.fazecast.jSerialComm.SerialPort;
 
 public class ArduinoExecInstance implements ExecInstance {
 	
 	private ArduinoCompiler compiler;
 	private ExecListener listener;
-	private String targetPort;
+	private SerialPort targetPort;
 
-	public ArduinoExecInstance(ArduinoCompiler compiler, String targetPort) {
+	public ArduinoExecInstance(ArduinoCompiler compiler, SerialPort targetPort) {
 		this.compiler = compiler;
 		this.targetPort = targetPort;
 	}
