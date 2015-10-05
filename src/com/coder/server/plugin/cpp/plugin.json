@@ -1,6 +1,6 @@
 {
         "version": 1.0,
-        "name": "Java Coder Plugin",
+        "name": "C++ Coder Plugin",
         "interfaces": [
                 {"com.coder.server.plugin.CoderProjectType": "com.coder.server.plugin.cpp.CppProject"}
         ]

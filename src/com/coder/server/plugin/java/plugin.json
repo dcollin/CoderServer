@@ -1,6 +1,6 @@
 {
         "version": 1.0,
-        "name": "Arduino Coder Plugin",
+        "name": "Java Coder Plugin",
         "interfaces": [
                 {"com.coder.server.plugin.CoderProjectType": "com.coder.server.plugin.java.JavaProject"}
         ]

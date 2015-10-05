@@ -57,13 +57,19 @@
 	<!--classpath included when building for test-->
 	<path id="classpath.build">
 		<pathelement location="${libDir}/Zutil.jar" />
+		<pathelement location="${libDir}/jSerialComm-1.3.4.jar" />
 	</path>
 	
 	<!-- ________________________ PUBLIC TARGETS ________________________ -->
 	
 	<!--build release and run-->
 	<target name="run" depends="buildRelease">
-		<java jar="${releaseDir}/CoderServer.jar" fork="true" failonerror="true" dir="${releaseDir}">
+		<java fork="true" failonerror="true" dir="${releaseDir}" classname="com.coder.server.CoderServer">
+			<classpath>
+				<pathelement path="${releaseDir}/*"/>	<!--wildcard may not be platform independent, ok?-->
+				<pathelement path="${releaseDir}/lib/*"/>	<!--wildcard may not be platform independent, ok?-->
+				<pathelement path="${releaseDir}/plugins/*"/>	<!--wildcard may not be platform independent, ok?-->
+			</classpath>
 		</java>
 	</target>
 	
