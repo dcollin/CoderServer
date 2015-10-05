@@ -48,13 +48,25 @@
 	
 	<!-- ________________________ CLASSPATHS ________________________ -->
 	
-	<!--classpath included when building for product-->
-	<path id="classpath.test">
-		<pathelement location="${libDir}/junit-4.12.jar" />
+	<!--classpath included when building for release-->
+	<path id="classpath.release">
+		<!--include library license files-->
+		<fileset dir="${libDir}">
+			<include name="**jSerialComm*.txt"/>
+			<include name="**Zutil*.txt"/>
+		</fileset>
+		<!--include libraries used for building-->
 		<path refid="classpath.build"/>
 	</path>
 	
 	<!--classpath included when building for test-->
+	<path id="classpath.test">
+		<pathelement location="${libDir}/junit-4.12.jar" />
+		<!--include libraries used for building-->
+		<path refid="classpath.build"/>
+	</path>
+	
+	<!--classpath included when building-->
 	<path id="classpath.build">
 		<pathelement location="${libDir}/Zutil.jar" />
 		<pathelement location="${libDir}/jSerialComm-1.3.4.jar" />
@@ -74,7 +86,7 @@
 	</target>
 	
 	<!--build all target code and create .jar files -->
-	<target name="buildRelease" depends="buildAll">
+	<target name="buildRelease" depends="buildAll, build-coder-server-jar, build-plugin-arduino-jar, build-plugin-cpp-jar, build-plugin-java-jar">
 		<!--create release dir-->
 		<mkdir dir="${releaseDir}" />
 		<!--copy licence file to release dir-->
@@ -83,9 +95,9 @@
 		<copy file="${gitRoot}/README.md" todir="${releaseDir}" />
 		<!--create release/lib dir-->
 		<mkdir dir="${releaseDir}/lib" />
-		<!--copy libs to release/lib dir-->
+		<!--copy libs and related files to release/lib dir-->
 		<copy todir="${releaseDir}/lib" flatten="true">
-			<path refid="classpath.build" />
+			<path refid="classpath.release" />
 		</copy>
 		<!--add startup script file to release dir-->
 		<copy file="${gitRoot}/start.sh" todir="${releaseDir}" />
@@ -93,38 +105,24 @@
 		<!--make startup script file executable-->
 		<chmod file="${releaseDir}/start.sh" perm="u+x" />
 		<chmod file="${releaseDir}/start.bat" perm="u+x" />
-		<!--build product jar-->
-		<antcall target="build-coder-server-jar" />
-		<!--build plugins-->
-		<antcall target="build-plugin-arduino-jar" />
-		<antcall target="build-plugin-cpp-jar" />
-		<antcall target="build-plugin-java-jar" />
 	</target>
 	
 	<!--build all product code-->
-	<target name="buildAll" depends="clean">
-		<antcall target="build-coder-server" />
-		<antcall target="build-plugin-arduino" />
-		<antcall target="build-plugin-cpp" />
-		<antcall target="build-plugin-java" />
+	<target name="buildAll" depends="clean, build-coder-server, build-plugin-arduino, build-plugin-cpp, build-plugin-java">
 	</target>
 	
 	<!--build all product- and test code and run all tests -->
-	<target name="testAll" depends="clean">
-		<antcall target="test-coder-server" />
-		<antcall target="test-plugin-arduino" />
-		<antcall target="test-plugin-cpp" />
-		<antcall target="test-plugin-java" />
+	<target name="testAll" depends="clean, test-coder-server, test-plugin-arduino, test-plugin-cpp, test-plugin-java">
 	</target>
 	
 	<!--clean all build paths-->
 	<target name="clean">
-        <delete includeemptydirs="true">
-            <fileset dir="${buildDir}" includes="**/*"/>
-        </delete>
-        <delete includeemptydirs="true">
-            <fileset dir="${releaseDir}" includes="**/*"/>
-        </delete>
+		<delete includeemptydirs="true" failonerror="false">
+			<fileset dir="${buildDir}" includes="**/*"/>
+		</delete>
+		<delete includeemptydirs="true" failonerror="false">
+			<fileset dir="${releaseDir}" includes="**/*"/>
+		</delete>
 	</target>
 	
 	<!-- ________________________ CODER SERVER ________________________ -->
@@ -182,7 +180,7 @@
 	<!-- ________________________ ARDUINO PLUGIN ________________________ -->
 	
 	<!--build product code and create jar file-->
-	<target name="build-plugin-arduino-jar">
+	<target name="build-plugin-arduino-jar" depends="git.revision">
 		<mkdir dir="${pluginDir}" />
 		<jar destfile="${arduinoJar}" baseDir="${arduinoBuildDir}">
 			<manifest>
@@ -202,9 +200,9 @@
 			<classpath refid="classpath.build" />
 		</javac>
 		<copy todir="${arduinoBuildDir}">
-		    <fileset dir="${srcDir}">
+			<fileset dir="${srcDir}">
 				<include name="**/${arduinoPackage}/*.json"/>
-		    </fileset>
+			</fileset>
 		</copy>
 	</target>
 	
@@ -237,7 +235,7 @@
 	<!-- ________________________ CPP PLUGIN ________________________ -->
 	
 	<!--build product code and create jar file-->
-	<target name="build-plugin-cpp-jar">
+	<target name="build-plugin-cpp-jar" depends="git.revision">
 		<mkdir dir="${pluginDir}" />
 		<jar destfile="${cppJar}" baseDir="${cppBuildDir}">
 			<manifest>
@@ -257,9 +255,9 @@
 			<classpath refid="classpath.build" />
 		</javac>
 		<copy todir="${cppBuildDir}">
-		    <fileset dir="${srcDir}">
+			<fileset dir="${srcDir}">
 				<include name="**/${cppPackage}/*.json"/>
-		    </fileset>
+			</fileset>
 		</copy>
 	</target>
 	
@@ -292,7 +290,7 @@
 	<!-- ________________________ JAVA PLUGIN ________________________ -->
 	
 	<!--build product code and create jar file-->
-	<target name="build-plugin-java-jar">
+	<target name="build-plugin-java-jar" depends="git.revision">
 		<mkdir dir="${pluginDir}" />
 		<jar destfile="${javaJar}" baseDir="${javaBuildDir}">
 			<manifest>
@@ -312,9 +310,9 @@
 			<classpath refid="classpath.build" />
 		</javac>
 		<copy todir="${javaBuildDir}">
-		    <fileset dir="${srcDir}">
+			<fileset dir="${srcDir}">
 				<include name="**/${javaPackage}/*.json"/>
-		    </fileset>
+			</fileset>
 		</copy>
 	</target>
 	
