@@ -10,8 +10,8 @@ import zutil.log.LogUtil;
 
 import com.coder.server.plugin.ExecInstance;
 import com.coder.server.struct.Project;
-import com.coder.server.util.OSAbstractionLayer;
 import com.coder.server.util.ExtendedProperties;
+import zutil.osal.OSAbstractionLayer;
 
 public class ArduinoCompiler {
 	private static final Logger logger = LogUtil.getLogger();
@@ -180,7 +180,7 @@ public class ArduinoCompiler {
 	
 	private int executeCommand(String cmd, ExecListener listener){
 		int exitCode = 0;
-		exitCode = OSAbstractionLayer.executeCommand(cmd, null, null);
+		OSAbstractionLayer.runCommand(cmd);
 		return exitCode;
 	}
 
