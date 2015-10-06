@@ -2,15 +2,18 @@ package com.coder.server.plugin.arduino;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.logging.Logger;
+
+import zutil.log.LogUtil;
 
 import com.coder.server.plugin.CompileStatusListener;
 import com.coder.server.plugin.ExecInstance;
 import com.coder.server.struct.Project;
 import com.coder.server.util.OSAbstractionLayer;
 import com.coder.server.util.ExtendedProperties;
-import com.fazecast.jSerialComm.SerialPort;
 
 public class ArduinoCompiler {
+	private static final Logger logger = LogUtil.getLogger();
 
 	private HashMap<File, Long> lastModificationTimeMap;
 	private ExtendedProperties compileProperties;
@@ -94,8 +97,9 @@ public class ArduinoCompiler {
 	 * @see com.coder.server.plugin.CoderCompiler#run(com.coder.server.struct.Project, java.io.Writer, java.io.Reader)
 	 */
 	public ExecInstance createExecInstance(ArduinoProject proj) {
-		SerialPort port = proj.getTargetPort();
-		ArduinoExecInstance execInstance = new ArduinoExecInstance(this, port);
+		String port = proj.getTargetPort();
+		int baudrate = proj.getTargetBaudrate();
+		ArduinoExecInstance execInstance = new ArduinoExecInstance(this, port, baudrate);
 		return execInstance;
 	}
 	

@@ -90,4 +90,9 @@ public class SerialMonitor extends Thread implements ExecInstance{
     public boolean isRunning() {
         return serial != null;
     }
+    
+    @Override
+    public void terminate(){
+    	close();
+    }
 }

@@ -14,4 +14,6 @@ public interface ExecInstance {
 
     public abstract boolean isRunning();
 
+    public abstract void terminate();
+    
 }

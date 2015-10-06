@@ -1,19 +1,24 @@
 package com.coder.server.plugin.arduino;
 
+import java.util.logging.Logger;
+
+import zutil.log.LogUtil;
+
 import com.coder.server.plugin.CoderProjectType;
 import com.coder.server.plugin.CompileStatusListener;
 import com.coder.server.plugin.ExecInstance;
 import com.coder.server.plugin.arduino.struct.Board;
 import com.coder.server.struct.Project;
 import com.coder.server.util.ExtendedProperties;
-import com.fazecast.jSerialComm.SerialPort;
 
 public class ArduinoProject extends Project {
+	private static final Logger logger = LogUtil.getLogger();
 	
 	private Board targetBoard;
-	private SerialPort targetPort;
+	private String targetPort;
 	private ArduinoCompiler compiler;
 	private ExtendedProperties projectProperties;
+	private int targetBauderate;
 	
 	public ArduinoProject(String name, CoderProjectType projectType, ArduinoCompiler compiler){
 		super(name, projectType);
@@ -66,7 +71,11 @@ public class ArduinoProject extends Project {
 		return this.compiler.createExecInstance(this);
 	}
 
-	public SerialPort getTargetPort() {
+	public String getTargetPort() {
 		return this.targetPort;
+	}
+	
+	public int getTargetBaudrate(){
+		return this.targetBauderate;
 	}
 }
