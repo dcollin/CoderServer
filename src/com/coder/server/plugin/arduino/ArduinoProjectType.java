@@ -2,6 +2,7 @@ package com.coder.server.plugin.arduino;
 
 import java.util.logging.Logger;
 
+import com.coder.server.message.ConfigData;
 import zutil.log.LogUtil;
 
 import com.coder.server.struct.Project;
@@ -18,14 +19,10 @@ public class ArduinoProjectType implements CoderProjectType {
 		return "Arduino";
 	}
 
+
 	@Override
 	public void init() {
 		
-	}
-
-	@Override
-	public String[] getSupportedArchitectures() {
-		return null;
 	}
 
 	@Override
@@ -41,5 +38,9 @@ public class ArduinoProjectType implements CoderProjectType {
 	public ExtendedProperties getProperties(){
 		return this.projectTypeProperties;
 	}
-		
+
+	@Override
+	public ConfigData getSupportedConfiguration() {
+		return null;
+	}
 }

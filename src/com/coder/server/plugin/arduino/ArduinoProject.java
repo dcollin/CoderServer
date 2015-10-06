@@ -2,10 +2,12 @@ package com.coder.server.plugin.arduino;
 
 import java.util.logging.Logger;
 
+import com.coder.server.message.ConfigData;
+import com.coder.server.plugin.CoderCompiler;
+import com.coder.server.plugin.ExecListener;
 import zutil.log.LogUtil;
 
 import com.coder.server.plugin.CoderProjectType;
-import com.coder.server.plugin.CompileStatusListener;
 import com.coder.server.plugin.ExecInstance;
 import com.coder.server.plugin.arduino.struct.Board;
 import com.coder.server.struct.Project;
@@ -61,8 +63,10 @@ public class ArduinoProject extends Project {
 		return buildProperties;
 	}
 
+
+
 	@Override
-	public boolean compile(CompileStatusListener listener) {
+	public CompileStatus compile(ExecListener listener) {
 		return this.compiler.compile(this, listener);
 	}
 
@@ -77,5 +81,15 @@ public class ArduinoProject extends Project {
 	
 	public int getTargetBaudrate(){
 		return this.targetBauderate;
+	}
+
+	@Override
+	public ConfigData getConfiguration() {
+		return null;
+	}
+
+	@Override
+	public void setConfiguration(ConfigData data) {
+
 	}
 }

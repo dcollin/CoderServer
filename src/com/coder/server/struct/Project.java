@@ -2,6 +2,7 @@ package com.coder.server.struct;
 
 import java.io.File;
 
+import com.coder.server.message.ConfigData;
 import com.coder.server.plugin.CoderCompiler;
 import com.coder.server.plugin.CoderProjectType;
 
@@ -25,5 +26,17 @@ public abstract class Project implements CoderCompiler {
 	public String getName(){
 		return this.name;
 	}
+
+
+	/**
+	 * @return the current configuration of the project, should always return a valid object
+	 */
+	public abstract ConfigData getConfiguration();
+
+	/**
+	 * Configure the project with the specific ConfigData.
+	 * @param 	data
+	 */
+	public abstract void setConfiguration(ConfigData data);
 	
 }

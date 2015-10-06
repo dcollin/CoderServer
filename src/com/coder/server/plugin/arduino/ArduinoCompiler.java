@@ -4,9 +4,10 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
+import com.coder.server.plugin.CoderCompiler.CompileStatus;
+import com.coder.server.plugin.ExecListener;
 import zutil.log.LogUtil;
 
-import com.coder.server.plugin.CompileStatusListener;
 import com.coder.server.plugin.ExecInstance;
 import com.coder.server.struct.Project;
 import com.coder.server.util.OSAbstractionLayer;
@@ -18,14 +19,6 @@ public class ArduinoCompiler {
 	private HashMap<File, Long> lastModificationTimeMap;
 	private ExtendedProperties compileProperties;
 
-
-	private enum CompileStatus{
-		COMPILE_SUCCESS,	//the file was compiled
-		COMPILE_SKIPPED,	//the file has not been changed and has already been compiled earlier
-		COMPILE_FAILED,		//the compilation failed
-		FILE_NOT_SOURCE_FILE,	//the file is skipped since it is not a source file
-		FILE_NOT_EXISTS		//file missing
-	}
 	
 	public ArduinoCompiler(){
 		lastModificationTimeMap = new HashMap<File, Long>();
@@ -39,13 +32,13 @@ public class ArduinoCompiler {
 	/* (non-Javadoc)
 	 * @see com.coder.server.plugin.CoderCompiler#compile(com.coder.server.struct.Project, java.io.Writer)
 	 */
-	public boolean compile(Project proj, CompileStatusListener listener) {
+	public CompileStatus compile(Project proj, ExecListener listener) {
 		if(listener != null){
-			listener.compileLog("VERIFYING SKETCH...");
+			listener.execOutput("VERIFYING SKETCH...");
 		}
 		
 		if( (proj instanceof ArduinoProject) == false){
-			return false; 
+			return CompileStatus.COMPILE_FAILED;
 		}
 		ArduinoProject arduinoProject = (ArduinoProject)proj;
 		ExtendedProperties buildProperies = arduinoProject.getBuildProperties();
@@ -57,7 +50,7 @@ public class ArduinoCompiler {
 		File sketchFile = new File(buildProperies.resolveString("{build_path}/{build.project_name}"));
 		CompileStatus buildStatus = compileFile(sketchFile, buildProperies, listener);
 		if(buildStatus != CompileStatus.COMPILE_SUCCESS){
-			return false;
+			return buildStatus;
 		}
 		
 		//build libraries
@@ -68,29 +61,29 @@ public class ArduinoCompiler {
 		buildProperies.setProperty("archive_file", "core.a");
 		buildStatus = buildArchive(archiveDirPath, buildProperies, listener);
 		if(buildStatus == CompileStatus.COMPILE_FAILED){
-			return false;
+			return buildStatus;
 		}else if(buildStatus == CompileStatus.FILE_NOT_EXISTS){
-			return false;
+			return buildStatus;
 		}
 		
 		//link
 		if(executeCommand(buildProperies.getProperty("recipe.c.combine.pattern"), listener) != 0){
-			return false;
+			return buildStatus;
 		}
 		if(executeCommand(buildProperies.getProperty("recipe.objcopy.eep.pattern"), listener) != 0){
-			return false;
+			return buildStatus;
 		}
 		if(executeCommand(buildProperies.getProperty("recipe.objcopy.hex.pattern"), listener) != 0){
-			return false;
+			return buildStatus;
 		}
 		
 		//calculate size of built file
 		//TODO
 		
 		if(listener != null){
-			listener.compileLog("VERIFYING DONE");
+			listener.execOutput("VERIFYING DONE");
 		}
-		return true;
+		return CompileStatus.COMPILE_SUCCESS;
 	}
 
 	/* (non-Javadoc)
@@ -103,7 +96,7 @@ public class ArduinoCompiler {
 		return execInstance;
 	}
 	
-	private CompileStatus buildArchive(String archiveDirPath, ExtendedProperties buildProperies, CompileStatusListener listener){
+	private CompileStatus buildArchive(String archiveDirPath, ExtendedProperties buildProperies, ExecListener listener){
 		//get the build properties from the project
 		
 		File archiveSourceFolder = new File(archiveDirPath);
@@ -149,7 +142,7 @@ public class ArduinoCompiler {
 		return CompileStatus.COMPILE_SUCCESS;
 	}
 	
-	private CompileStatus compileFile(File sourceFile, ExtendedProperties buildProperies, CompileStatusListener listener){
+	private CompileStatus compileFile(File sourceFile, ExtendedProperties buildProperies, ExecListener listener){
 		buildProperies.setProperty("source_file", sourceFile.getAbsolutePath());
 		buildProperies.setProperty("object_file", "{build.path}/"+sourceFile.getName()+".o");
 		
@@ -185,7 +178,7 @@ public class ArduinoCompiler {
 		return CompileStatus.COMPILE_SUCCESS;
 	}
 	
-	private int executeCommand(String cmd, CompileStatusListener listener){
+	private int executeCommand(String cmd, ExecListener listener){
 		int exitCode = 0;
 		exitCode = OSAbstractionLayer.executeCommand(cmd, null, null);
 		return exitCode;
