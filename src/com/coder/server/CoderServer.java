@@ -41,10 +41,15 @@ public class CoderServer extends ThreadedTCPNetworkServer{
             }
 
             /********* LOAD DATA **********/
+            log.info("Loading configuration data...");
             // TODO: add actual database/file setup
             UserManager.initialize();
-            UserManager.getInstance().addUser(new User("ziver"));
-            UserManager.getInstance().addUser(new User("daniel"));
+            User user1 = new User("ziver");
+            user1.setPassword("bytesut");
+            UserManager.getInstance().addUser(user1);
+            User user2 = new User("daniel");
+            user2.setPassword("bytesut");
+            UserManager.getInstance().addUser(user2);
 
             /************ JSON ************/
             log.info("Starting up JSON server...");

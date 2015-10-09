@@ -6,6 +6,7 @@ import com.coder.server.message.CoderMessage;
 import com.coder.server.struct.User;
 import zutil.Encrypter;
 import zutil.Hasher;
+import zutil.io.MultiPrintStream;
 import zutil.log.LogUtil;
 import zutil.net.threaded.ThreadedTCPNetworkServerThread;
 import zutil.parser.json.JSONObjectInputStream;
@@ -13,6 +14,10 @@ import zutil.parser.json.JSONObjectOutputStream;
 
 import javax.crypto.NoSuchPaddingException;
 import java.io.*;
+import java.lang.reflect.Array;
+import java.lang.reflect.GenericArrayType;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.net.Socket;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -46,7 +51,11 @@ public class CoderConnectionThread implements ThreadedTCPNetworkServerThread {
                 return;
 
             // Handle incoming messages
-            // TODO: start parsing incoming messages from client
+            CoderMessage msg = null;
+            while((msg=in.readGenericObject()) != null){
+                // Dump the received message to the terminal
+                MultiPrintStream.out.dump(msg);
+            }
         }catch (Exception e){
             logger.log(Level.SEVERE, "Client Connection issue", e);
         }
@@ -55,23 +64,24 @@ public class CoderConnectionThread implements ThreadedTCPNetworkServerThread {
         }
     }
 
+
     private String authenticate() throws IOException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeySpecException, InvalidKeyException {
         ///////////// CLEARTEXT CONNECTION //////////////////////
-        // We dont create any buffers here as these streams might be replaced by encrypted ones
+        // We don't create any buffers here as these streams might be replaced by encrypted ones
         in = new JSONObjectInputStream(socket.getInputStream());
         in.registerRootClass(CoderMessage.class);
         out = new JSONObjectOutputStream(socket.getOutputStream());
         out.enableMetaData(false);
 
         // Receive AuthenticationReq
-        CoderMessage msg = readMsg();
-        if(msg.AuthenticationReq == null){
+        CoderMessage msg = in.readGenericObject();
+        if(msg == null || msg.AuthenticationReq == null){
             logger.severe("Expected message AuthenticationReq.");
             return null;
         }
         user = UserManager.getInstance().getUser(msg.AuthenticationReq.username);
         if(user == null){
-            logger.severe("Unknown user: "+msg.AuthenticationReq.username);
+            logger.severe("Unknown user: '"+ msg.AuthenticationReq.username +"'");
             return null;
         }
 
@@ -91,8 +101,8 @@ public class CoderConnectionThread implements ThreadedTCPNetworkServerThread {
 
         ///////////// ENCRYPTED CONNECTION //////////////////////
         // Receive AuthenticationRsp
-        msg = readMsg();
-        if(msg.AuthenticationRsp == null){
+        msg = in.readGenericObject();
+        if(msg == null || msg.AuthenticationRsp == null){
             logger.severe("Expected message AuthenticationRsp.");
             return null;
         }
@@ -102,18 +112,15 @@ public class CoderConnectionThread implements ThreadedTCPNetworkServerThread {
         success.AuthenticationSuccess = new AuthenticationSuccessMsg();
         out.writeObject(success);
 
+        logger.info("User '" + user.getUsername() + "' has connected from ip: " + socket.getInetAddress());
         return key;
-    }
-
-
-    private CoderMessage readMsg() throws IOException {
-        return (CoderMessage) in.readObject();
     }
 
 
     public void close(){
         if(socket != null){
             try {
+                logger.info("Disconnecting"+ (user!=null? (" user '" + user.getUsername() + "' with"):"") +" ip: " + socket.getInetAddress());
                 socket.close();
                 socket = null;
             } catch (IOException e1) {
