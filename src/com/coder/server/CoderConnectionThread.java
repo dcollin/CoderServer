@@ -11,10 +11,13 @@ import zutil.net.threaded.ThreadedTCPNetworkServerThread;
 import zutil.parser.json.JSONObjectInputStream;
 import zutil.parser.json.JSONObjectOutputStream;
 
+import javax.crypto.NoSuchPaddingException;
 import java.io.*;
 import java.net.Socket;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -52,7 +55,7 @@ public class CoderConnectionThread implements ThreadedTCPNetworkServerThread {
         }
     }
 
-    private String authenticate() throws IOException, NoSuchAlgorithmException {
+    private String authenticate() throws IOException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeySpecException, InvalidKeyException {
         ///////////// CLEARTEXT CONNECTION //////////////////////
         // We dont create any buffers here as these streams might be replaced by encrypted ones
         in = new JSONObjectInputStream(socket.getInputStream());
@@ -80,7 +83,7 @@ public class CoderConnectionThread implements ThreadedTCPNetworkServerThread {
 
         // Setting up encryption
         String key = Hasher.PBKDF2(user.getPasswordHash(), challenge.AuthenticationChallenge.salt, 500);
-        Encrypter crypto = new Encrypter(key, Encrypter.AES_ALGO);
+        Encrypter crypto = new Encrypter(key, Encrypter.Algorithm.AES);
         in = new JSONObjectInputStream(new BufferedInputStream(crypto.decrypt(socket.getInputStream())));
         in.registerRootClass(CoderMessage.class);
         out = new JSONObjectOutputStream(new BufferedOutputStream(crypto.encrypt(socket.getOutputStream())));
