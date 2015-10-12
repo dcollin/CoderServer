@@ -1,27 +1,28 @@
 package com.coder.server.message;
 
 
+import java.util.List;
+import java.util.Map;
+
 public class CoderMessage {
 
     // Authentication messaging
-    public AuthenticationReqMsg AuthenticationReq;
-    public AuthenticationChallengeMsg AuthenticationChallenge;
-    public AuthenticationRspMsg AuthenticationRsp;
-    public AuthenticationSuccessMsg AuthenticationSuccess;
+    public AuthenticationReqMsg         AuthenticationReq;
+    public AuthenticationChallengeMsg   AuthenticationChallenge;
+    public AuthenticationRspMsg         AuthenticationRsp;
+    public AuthenticationSuccessMsg     AuthenticationSuccess;
 
 
     // Project messaging
-    public int ProjectTypeReq;
-    public int ProjectTypeRsp;
+    public ProjectTypeReqMsg            ProjectTypeReq;
+    public Map<String,ConfigData>       ProjectTypeRsp; // ? Wont work
 
-    public int ProjectCreateReq;
-    public int ProjectCreateRsp;
+    public ProjectListReqMsg            ProjectListReq;
+    public Map<String,ConfigData>       ProjectListRsp; // ? Wont work
 
-    public int ProjectListReq;
-    public int ProjectListRsp;
-
-    public int ProjectReq;
-    public int ProjectRsp;
+    public ProjectCreateReqMsg          ProjectCreateReq;
+    public ProjectReqMsg                ProjectReq;
+    public ProjectRspMsg                ProjectRsp;
 
 
     // File messaging
