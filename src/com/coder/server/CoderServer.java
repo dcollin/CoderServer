@@ -1,6 +1,8 @@
 package com.coder.server;
 
 import com.coder.server.plugin.CoderProjectType;
+import com.coder.server.plugin.arduino.ArduinoProjectType;
+import com.coder.server.struct.Project;
 import com.coder.server.struct.User;
 import zutil.log.CompactLogFormatter;
 import zutil.log.LogUtil;
@@ -22,26 +24,15 @@ public class CoderServer extends ThreadedTCPNetworkServer{
     public static final Logger log = LogUtil.getLogger();
     public static final int SERVER_PORT = 1337;
 
-    private static HashMap<String,CoderProjectType> projectTypes = new HashMap<>();
-
 
     public static void main(String[] args){
         try {
             LogUtil.setGlobalLevel(Level.FINEST);
             LogUtil.setGlobalFormatter(new CompactLogFormatter());
 
-            /*********** PLUGINS **********/
-            log.info("Looking for plugins...");
-            PluginManager<?> projPlugins = new PluginManager<>();
-            for(PluginData plugin : projPlugins){
-                for(Iterator<CoderProjectType> it = plugin.getIterator(CoderProjectType.class); it.hasNext();){
-                    CoderProjectType p = it.next();
-                    projectTypes.put(p.getName(), p);
-                }
-            }
 
-            /********* LOAD DATA **********/
-            log.info("Loading configuration data...");
+            /********* LOAD USER DATA **********/
+            log.info("Loading user data...");
             // TODO: add actual database/file setup
             UserManager.initialize();
             User user1 = new User("ziver");
@@ -50,6 +41,12 @@ public class CoderServer extends ThreadedTCPNetworkServer{
             User user2 = new User("daniel");
             user2.setPassword("bytesut");
             UserManager.getInstance().addUser(user2);
+
+            /******** LOAD PROJECT DATA *********/
+            log.info("Loading project data...");
+            ProjectManager.initialize();
+            Project proj = new ArduinoProjectType().createProject("First Project");
+            ProjectManager.getInstance().addProject(proj);
 
             /************ JSON ************/
             log.info("Starting up JSON server...");

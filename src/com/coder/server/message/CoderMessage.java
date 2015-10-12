@@ -15,10 +15,10 @@ public class CoderMessage {
 
     // Project messaging
     public ProjectTypeReqMsg            ProjectTypeReq;
-    public Map<String,ConfigData>       ProjectTypeRsp; // ? Wont work
+    public Map<String,ConfigData>       ProjectTypeRsp;
 
     public ProjectListReqMsg            ProjectListReq;
-    public Map<String,ConfigData>       ProjectListRsp; // ? Wont work
+    public Map<String,ProjectListData>  ProjectListRsp;
 
     public ProjectCreateReqMsg          ProjectCreateReq;
     public ProjectReqMsg                ProjectReq;

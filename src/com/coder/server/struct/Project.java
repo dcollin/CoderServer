@@ -1,6 +1,7 @@
 package com.coder.server.struct;
 
 import java.io.File;
+import java.util.List;
 
 import com.coder.server.message.ConfigData;
 import com.coder.server.plugin.CoderCompiler;
@@ -15,7 +16,7 @@ public abstract class Project implements CoderCompiler {
 		this.projectType = projectType;
 	}
 	
-	public File[] getFileList(){
+	public List<String> getFileList(){
 		return null;
 	}
 	

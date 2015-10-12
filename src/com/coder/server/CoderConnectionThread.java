@@ -1,8 +1,8 @@
 package com.coder.server;
 
-import com.coder.server.message.AuthenticationChallengeMsg;
-import com.coder.server.message.AuthenticationSuccessMsg;
-import com.coder.server.message.CoderMessage;
+import com.coder.server.message.*;
+import com.coder.server.plugin.CoderProjectType;
+import com.coder.server.struct.Project;
 import com.coder.server.struct.User;
 import zutil.Encrypter;
 import zutil.Hasher;
@@ -23,6 +23,9 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,7 +39,8 @@ public class CoderConnectionThread implements ThreadedTCPNetworkServerThread {
     private JSONObjectInputStream in;
     private JSONObjectOutputStream out;
 
-    private User user;
+    private User user = null;
+
 
     public CoderConnectionThread(Socket socket) throws IOException {
         this.socket = socket;
@@ -53,8 +57,65 @@ public class CoderConnectionThread implements ThreadedTCPNetworkServerThread {
             // Handle incoming messages
             CoderMessage msg = null;
             while((msg=in.readGenericObject()) != null){
-                // Dump the received message to the terminal
+                // DEBUG: Dump the received message to the terminal
                 MultiPrintStream.out.dump(msg);
+
+                CoderMessage rspMsg = new CoderMessage();
+                //********* PROJECT HANDLING *********
+                if(msg.ProjectTypeReq != null){
+                    rspMsg.ProjectTypeRsp = new HashMap<>();
+                    // Send a single project type
+                    if(msg.ProjectTypeReq.type != null){
+                        CoderProjectType type = ProjectManager.getInstance()
+                                .getProjectTypes().get(msg.ProjectTypeReq.type);
+                        if(type != null)
+                            rspMsg.ProjectTypeRsp.put(type.getName(), type.getSupportedConfiguration());
+                    }
+                    // Send all project types
+                    else {
+                        for (Map.Entry<String, CoderProjectType> entry :
+                                ProjectManager.getInstance().getProjectTypes().entrySet()) {
+                            CoderProjectType type = entry.getValue();
+                            rspMsg.ProjectTypeRsp.put(type.getName(), type.getSupportedConfiguration());
+                        }
+                    }
+                }
+                if(msg.ProjectListReq != null){
+                    rspMsg.ProjectListRsp = new HashMap<>();
+                    for(Project proj : ProjectManager.getInstance()){
+                        ProjectListData data = new ProjectListData();
+                        data.type = proj.getProjectType().getName();
+                        data.config = proj.getConfiguration();
+                        rspMsg.ProjectListRsp.put(proj.getName(), data);
+                    }
+                }
+                if(msg.ProjectReq != null || msg.ProjectCreateReq != null){
+                    rspMsg.ProjectRsp = new ProjectRspMsg();
+                    Project proj = null;
+                    // Create new project
+                    if(msg.ProjectCreateReq != null){
+                        CoderProjectType type = ProjectManager.getInstance()
+                                .getProjectTypes().get(msg.ProjectCreateReq.type);
+                        if(type != null)
+                            proj = type.createProject(msg.ProjectCreateReq.name);
+                        else
+                            rspMsg.ProjectRsp.error = "No such project type found.";
+                    }
+                    // Get existing project
+                    else
+                        proj = ProjectManager.getInstance().getProject(msg.ProjectReq.name);
+
+                    if(proj != null){
+                        rspMsg.ProjectRsp.name = proj.getName();
+                        rspMsg.ProjectRsp.type = proj.getProjectType().getName();
+                        rspMsg.ProjectRsp.config = proj.getConfiguration();
+                        rspMsg.ProjectRsp.fileList = proj.getFileList();
+                    }
+                    else if(rspMsg.ProjectRsp.error == null) // Do we already have a error msg?
+                        rspMsg.ProjectRsp.error = "No such project found.";
+                }
+
+                out.writeObject(rspMsg);
             }
         }catch (Exception e){
             logger.log(Level.SEVERE, "Client Connection issue", e);
@@ -93,11 +154,12 @@ public class CoderConnectionThread implements ThreadedTCPNetworkServerThread {
 
         // Setting up encryption
         String key = Hasher.PBKDF2(user.getPasswordHash(), challenge.AuthenticationChallenge.salt, 500);
-        Encrypter crypto = new Encrypter(key, Encrypter.Algorithm.AES);
+        /*Encrypter crypto = new Encrypter(key, Encrypter.Algorithm.AES);
         in = new JSONObjectInputStream(new BufferedInputStream(crypto.decrypt(socket.getInputStream())));
         in.registerRootClass(CoderMessage.class);
         out = new JSONObjectOutputStream(new BufferedOutputStream(crypto.encrypt(socket.getOutputStream())));
         out.enableMetaData(false);
+        */
 
         ///////////// ENCRYPTED CONNECTION //////////////////////
         // Receive AuthenticationRsp

@@ -9,4 +9,7 @@ public class ProjectRspMsg {
     public String type;
     public ConfigData config;
     public List<String> fileList;
+
+    /** OPTIONAL **/
+    public String error;
 }
