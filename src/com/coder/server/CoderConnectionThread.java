@@ -151,6 +151,7 @@ public class CoderConnectionThread implements ThreadedTCPNetworkServerThread {
         challenge.AuthenticationChallenge = new AuthenticationChallengeMsg();
         challenge.AuthenticationChallenge.salt = Integer.toString((int)(Math.random()*1_000_000));
         out.writeObject(challenge);
+        out.flush();
 
         // Setting up encryption
         String key = Hasher.PBKDF2(user.getPasswordHash(), challenge.AuthenticationChallenge.salt, 500);
@@ -173,6 +174,7 @@ public class CoderConnectionThread implements ThreadedTCPNetworkServerThread {
         CoderMessage success = new CoderMessage();
         success.AuthenticationSuccess = new AuthenticationSuccessMsg();
         out.writeObject(success);
+        out.flush();
 
         logger.info("User '" + user.getUsername() + "' has connected from ip: " + socket.getInetAddress());
         return key;

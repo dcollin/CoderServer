@@ -3,6 +3,7 @@
 .classpath
 .project
 .settings/*
+.externalToolBuilders/*
 bin/*
 
 # IntellIj project files and folders

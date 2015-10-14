@@ -90,7 +90,7 @@
 		<!--create release dir-->
 		<mkdir dir="${releaseDir}" />
 		<!--copy licence file to release dir-->
-		<copy file="${gitRoot}/licence.txt" todir="${releaseDir}" />
+		<copy file="${gitRoot}/LICENSE.txt" todir="${releaseDir}" />
 		<!--copy readme file to release dir-->
 		<copy file="${gitRoot}/README.md" todir="${releaseDir}" />
 		<!--create release/lib dir-->
