@@ -20,6 +20,7 @@ public class ConfigManager {
     // Configuration files
     private static final String SERVER_CONF = "coder.properties";
     private static final String PROJECT_CONF = ".project";
+    private static final String USER_CONF_EXT = ".properties";
 
     private static final Logger logger = LogUtil.getLogger();
     private static ConfigManager instance;
@@ -43,10 +44,10 @@ public class ConfigManager {
             in.close();
         }
         else{
-            serverConf = getDefaultServerConf();
+            serverConf = new Properties(getDefaultServerConf());
             serverConfFile.getParentFile().mkdirs();
             FileWriter out = new FileWriter(serverConfFile);
-            serverConf.store(out, "This is a auto generated config file");
+            getDefaultServerConf().store(out, "This is a auto generated config file");
             out.close();
         }
 
@@ -57,20 +58,60 @@ public class ConfigManager {
             this.projectPath.mkdirs();
     }
 
+
     public Properties getServerConf(){
         return serverConf;
     }
 
+
+    public Properties getUserConf(String username) throws IOException {
+        return getUserConf(
+                new File(userPath, username+USER_CONF_EXT));
+    }
+    private Properties getUserConf(File userConf) throws IOException {
+        if(userConf.isFile()) { // is there a userConf file
+            Properties prop = new Properties(getDefaultUserConf());
+            FileReader in = new FileReader(userConf);
+            prop.load(in);
+            in.close();
+            return prop;
+        }
+        return null;
+    }
+    public List<Properties> getUserConfs() throws IOException {
+        ArrayList<Properties> list = new ArrayList();
+        for(File userConf : userPath.listFiles()){
+            if(userConf.isFile()){
+                list.add(getUserConf(userConf));
+            }
+        }
+        return list;
+    }
+
+
+    public File getProjectRoot(String projectName){
+        return new File(projectPath, cleanString(projectName));
+    }
+    public Properties getProjectConf(String projectName) throws IOException {
+        return getProjectConf(
+                new File(getProjectRoot(projectName), PROJECT_CONF));
+    }
+    private Properties getProjectConf(File projConf) throws IOException {
+        if(projConf.isFile()) { // is there a config file?
+            Properties prop = new Properties(getDefaultProjectConf());
+            FileReader in = new FileReader(projConf);
+            prop.load(in);
+            in.close();
+            return prop;
+        }
+        return null;
+    }
     public List<Properties> getProjectConfs() throws IOException {
         ArrayList<Properties> list = new ArrayList();
         for(File projDir : projectPath.listFiles()){
             File projConf = new File(projDir, PROJECT_CONF);
             if(projConf.exists() && projConf.isFile()){
-                Properties prop = new Properties();
-                FileReader in = new FileReader(projConf);
-                prop.load(in);
-                in.close();
-                list.add(prop);
+                list.add(getProjectConf(projConf));
             }
             else
                 logger.warning("Unable to find project properties file: "+ projDir);
@@ -78,6 +119,7 @@ public class ConfigManager {
         }
         return list;
     }
+
 
 
 
@@ -94,14 +136,14 @@ public class ConfigManager {
     }
     private static Properties getDefaultProjectConf(){
         Properties conf = new Properties();
-        conf.setProperty("name", "New Project");
+        conf.setProperty("name", "New project");
         conf.setProperty("type", "Generic");
         return conf;
     }
 
     private static String cleanString(String str){
         str = str.replaceAll("\\W", "_");
-        return str;
+        return str.toLowerCase();
     }
 
 
