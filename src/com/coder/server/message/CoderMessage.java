@@ -26,19 +26,19 @@ public class CoderMessage {
 
 
     // File messaging
-    public int FileCreateReq;
-    public int FileCreateRsp;
+    public Object FileCreateReq;
+    public Object FileCreateRsp;
 
-    public int FileReq;
-    public int FileRsp;
+    public Object FileReq;
+    public Object FileRsp;
 
-    public int FileSaveReq;
-    public int FileSaveRsp;
+    public Object FileSaveReq;
+    public Object FileSaveRsp;
 
 
     // Build and run messaging
 
     // Other messages
-    public int PortInfoReq;
-    public int PortInfoRsp;
+    public Object PortInfoReq;
+    public Object PortInfoRsp;
 }

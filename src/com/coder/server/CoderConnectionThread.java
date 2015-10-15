@@ -7,7 +7,9 @@ import com.coder.server.struct.User;
 import zutil.Encrypter;
 import zutil.Hasher;
 import zutil.io.MultiPrintStream;
+import zutil.log.InputStreamLogger;
 import zutil.log.LogUtil;
+import zutil.log.OutputStreamLogger;
 import zutil.net.threaded.ThreadedTCPNetworkServerThread;
 import zutil.parser.json.JSONObjectInputStream;
 import zutil.parser.json.JSONObjectOutputStream;
@@ -118,7 +120,7 @@ public class CoderConnectionThread implements ThreadedTCPNetworkServerThread {
                 out.writeObject(rspMsg);
             }
         }catch (Exception e){
-            logger.log(Level.SEVERE, "Client Connection issue", e);
+            logger.log(Level.SEVERE, e.getClass().getName() +": "+ e.getMessage());
         }
         finally {
             close();
@@ -129,9 +131,9 @@ public class CoderConnectionThread implements ThreadedTCPNetworkServerThread {
     private String authenticate() throws IOException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeySpecException, InvalidKeyException {
         ///////////// CLEARTEXT CONNECTION //////////////////////
         // We don't create any buffers here as these streams might be replaced by encrypted ones
-        in = new JSONObjectInputStream(socket.getInputStream());
+        in = new JSONObjectInputStream(new InputStreamLogger(socket.getInputStream()));
         in.registerRootClass(CoderMessage.class);
-        out = new JSONObjectOutputStream(socket.getOutputStream());
+        out = new JSONObjectOutputStream(new OutputStreamLogger(socket.getOutputStream()));
         out.enableMetaData(false);
 
         // Receive AuthenticationReq
@@ -156,9 +158,9 @@ public class CoderConnectionThread implements ThreadedTCPNetworkServerThread {
         // Setting up encryption
         String key = Hasher.PBKDF2(user.getPasswordHash(), challenge.AuthenticationChallenge.salt, 500);
         /*Encrypter crypto = new Encrypter(key, Encrypter.Algorithm.AES);
-        in = new JSONObjectInputStream(new BufferedInputStream(crypto.decrypt(socket.getInputStream())));
+        in = new JSONObjectInputStream(new BufferedInputStream(crypto.decrypt(new InputStreamLogger(socket.getInputStream()))));
         in.registerRootClass(CoderMessage.class);
-        out = new JSONObjectOutputStream(new BufferedOutputStream(crypto.encrypt(socket.getOutputStream())));
+        out = new JSONObjectOutputStream(new BufferedOutputStream(crypto.encrypt(new OutputStreamLogger(socket.getOutputStream()))));
         out.enableMetaData(false);
         */
 
