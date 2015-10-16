@@ -2,7 +2,9 @@ package com.coder.server.struct;
 
 import java.io.File;
 import java.util.List;
+import java.util.Properties;
 
+import com.coder.server.ProjectManager;
 import com.coder.server.message.ConfigData;
 import com.coder.server.plugin.CoderCompiler;
 import com.coder.server.plugin.CoderProjectType;
@@ -15,6 +17,17 @@ public abstract class Project implements CoderCompiler {
 		this.name = name;
 		this.projectType = projectType;
 	}
+	public Project(Properties userProp) {
+		this.name = userProp.getProperty("name");
+		this.projectType = ProjectManager.getInstance().getProjectType(userProp.getProperty("type"));
+	}
+	public Properties getProperties(){
+		Properties userProp = new Properties();
+		userProp.setProperty("name", name);
+		userProp.getProperty("type", projectType.getName());
+		return userProp;
+	}
+
 	
 	public List<String> getFileList(){
 		return null;

@@ -70,7 +70,7 @@ public class ConfigManager {
     }
     private Properties getUserConf(File userConf) throws IOException {
         if(userConf.isFile()) { // is there a userConf file
-            Properties prop = new Properties(getDefaultUserConf());
+            Properties prop = new Properties();
             FileReader in = new FileReader(userConf);
             prop.load(in);
             in.close();
@@ -98,7 +98,7 @@ public class ConfigManager {
     }
     private Properties getProjectConf(File projConf) throws IOException {
         if(projConf.isFile()) { // is there a config file?
-            Properties prop = new Properties(getDefaultProjectConf());
+            Properties prop = new Properties();
             FileReader in = new FileReader(projConf);
             prop.load(in);
             in.close();
@@ -128,18 +128,7 @@ public class ConfigManager {
         conf.setProperty("port", "1337");
         return conf;
     }
-    private static Properties getDefaultUserConf(){
-        Properties conf = new Properties();
-        conf.setProperty("username", "nobody");
-        conf.setProperty("passhash", "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
-        return conf;
-    }
-    private static Properties getDefaultProjectConf(){
-        Properties conf = new Properties();
-        conf.setProperty("name", "New project");
-        conf.setProperty("type", "Generic");
-        return conf;
-    }
+
 
     private static String cleanString(String str){
         str = str.replaceAll("\\W", "_");

@@ -69,15 +69,15 @@ public class CoderConnectionThread implements ThreadedTCPNetworkServerThread {
                     // Send a single project type
                     if(msg.ProjectTypeReq.type != null){
                         CoderProjectType type = ProjectManager.getInstance()
-                                .getProjectTypes().get(msg.ProjectTypeReq.type);
+                                .getProjectType(msg.ProjectTypeReq.type);
                         if(type != null)
                             rspMsg.ProjectTypeRsp.put(type.getName(), type.getSupportedConfiguration());
                     }
                     // Send all project types
                     else {
-                        for (Map.Entry<String, CoderProjectType> entry :
-                                ProjectManager.getInstance().getProjectTypes().entrySet()) {
-                            CoderProjectType type = entry.getValue();
+                        for (Iterator<CoderProjectType> it=ProjectManager.getInstance().getProjectTypeIterator();
+                                it.hasNext();) {
+                            CoderProjectType type = it.next();
                             rspMsg.ProjectTypeRsp.put(type.getName(), type.getSupportedConfiguration());
                         }
                     }
@@ -97,7 +97,7 @@ public class CoderConnectionThread implements ThreadedTCPNetworkServerThread {
                     // Create new project
                     if(msg.ProjectCreateReq != null){
                         CoderProjectType type = ProjectManager.getInstance()
-                                .getProjectTypes().get(msg.ProjectCreateReq.type);
+                                .getProjectType(msg.ProjectCreateReq.type);
                         if(type != null)
                             proj = type.createProject(msg.ProjectCreateReq.name);
                         else

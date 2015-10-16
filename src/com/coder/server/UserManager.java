@@ -2,7 +2,10 @@ package com.coder.server;
 
 import com.coder.server.struct.User;
 
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * This class handles a record of all user.
@@ -25,8 +28,13 @@ public class UserManager {
     }
 
 
-    protected static void initialize(){
+    protected static void initialize() throws IOException {
         instance = new UserManager();
+
+        List<Properties> users = ConfigManager.getInstance().getUserConfs();
+        for(Properties userProp : users){
+            instance.addUser(new User(userProp));
+        }
     }
 
     public static UserManager getInstance(){

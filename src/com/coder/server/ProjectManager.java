@@ -28,8 +28,11 @@ public class ProjectManager implements Iterable<Project>{
     }
 
 
-    public HashMap<String,CoderProjectType> getProjectTypes(){
-        return projectTypes;
+    public CoderProjectType getProjectType(String name){
+        return projectTypes.get(name);
+    }
+    public Iterator<CoderProjectType> getProjectTypeIterator(){
+        return projectTypes.values().iterator();
     }
 
     public void addProject(Project proj){

@@ -30,6 +30,8 @@ public class CoderServer extends ThreadedTCPNetworkServer{
             LogUtil.setGlobalLevel(Level.FINEST);
             LogUtil.setGlobalFormatter(new CompactLogFormatter());
 
+            /********* Reading Configuration **********/
+            ConfigManager.initialize();
 
             /********* LOAD USER DATA **********/
             log.info("Loading user data...");
