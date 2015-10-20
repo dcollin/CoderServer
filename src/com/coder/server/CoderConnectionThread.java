@@ -87,7 +87,7 @@ public class CoderConnectionThread implements ThreadedTCPNetworkServerThread {
                     for(Project proj : ProjectManager.getInstance()){
                         ProjectListData data = new ProjectListData();
                         data.type = proj.getProjectType().getName();
-                        data.config = proj.getConfiguration();
+                        data.description = proj.getDescription();
                         rspMsg.ProjectListRsp.put(proj.getName(), data);
                     }
                 }
@@ -98,8 +98,10 @@ public class CoderConnectionThread implements ThreadedTCPNetworkServerThread {
                     if(msg.ProjectCreateReq != null){
                         CoderProjectType type = ProjectManager.getInstance()
                                 .getProjectType(msg.ProjectCreateReq.type);
-                        if(type != null)
+                        if(type != null) {
                             proj = type.createProject(msg.ProjectCreateReq.name);
+                            proj.setDescription(msg.ProjectReq.description);
+                        }
                         else
                             rspMsg.ProjectRsp.error = "No such project type found.";
                     }
@@ -110,6 +112,7 @@ public class CoderConnectionThread implements ThreadedTCPNetworkServerThread {
                     if(proj != null){
                         rspMsg.ProjectRsp.name = proj.getName();
                         rspMsg.ProjectRsp.type = proj.getProjectType().getName();
+                        rspMsg.ProjectRsp.description = proj.getDescription();
                         rspMsg.ProjectRsp.config = proj.getConfiguration();
                         rspMsg.ProjectRsp.fileList = proj.getFileList();
                     }
@@ -118,6 +121,7 @@ public class CoderConnectionThread implements ThreadedTCPNetworkServerThread {
                 }
 
                 out.writeObject(rspMsg);
+                out.flush();
             }
         }catch (Exception e){
             logger.log(Level.SEVERE, e.getClass().getName() +": "+ e.getMessage());

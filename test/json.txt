@@ -1,0 +1,12 @@
+{"AuthenticationReq": {"username": "ziver"}}
+
+{"AuthenticationRsp": {"timestamp": "123456"}}
+
+{"ProjectTypeReq": {}}
+
+{"ProjectCreateReq": {"name": "First Project", "type": "Arduino"}}
+
+{"ProjectListReq": {}}
+
+{"ProjectReq": {"name": "First Project"}}
+

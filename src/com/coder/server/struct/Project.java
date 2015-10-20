@@ -11,6 +11,7 @@ import com.coder.server.plugin.CoderProjectType;
 
 public abstract class Project implements CoderCompiler {
 	private String name = null;
+	private String description = null;
 	private CoderProjectType projectType = null;
 	
 	public Project(String name, CoderProjectType projectType){
@@ -19,11 +20,13 @@ public abstract class Project implements CoderCompiler {
 	}
 	public Project(Properties userProp) {
 		this.name = userProp.getProperty("name");
+		this.description = userProp.getProperty("description");
 		this.projectType = ProjectManager.getInstance().getProjectType(userProp.getProperty("type"));
 	}
 	public Properties getProperties(){
 		Properties userProp = new Properties();
 		userProp.setProperty("name", name);
+		userProp.setProperty("description", description);
 		userProp.getProperty("type", projectType.getName());
 		return userProp;
 	}
@@ -41,6 +44,12 @@ public abstract class Project implements CoderCompiler {
 		return this.name;
 	}
 
+    public String getDescription() {
+        return description;
+    }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
 	/**
 	 * @return the current configuration of the project, should always return a valid object
@@ -52,5 +61,5 @@ public abstract class Project implements CoderCompiler {
 	 * @param 	data
 	 */
 	public abstract void setConfiguration(ConfigData data);
-	
+
 }
