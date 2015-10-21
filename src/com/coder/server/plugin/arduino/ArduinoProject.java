@@ -1,19 +1,18 @@
 package com.coder.server.plugin.arduino;
 
-import java.util.logging.Logger;
-
 import com.coder.server.message.ConfigData;
 import com.coder.server.plugin.CoderCompiler;
-import com.coder.server.plugin.ExecListener;
-import zutil.log.LogUtil;
-
 import com.coder.server.plugin.CoderProjectType;
 import com.coder.server.plugin.ExecInstance;
+import com.coder.server.plugin.ExecListener;
 import com.coder.server.plugin.arduino.struct.Board;
 import com.coder.server.struct.Project;
 import com.coder.server.util.ExtendedProperties;
+import zutil.log.LogUtil;
 
-public class ArduinoProject extends Project {
+import java.util.logging.Logger;
+
+public class ArduinoProject extends Project implements CoderCompiler{
 	private static final Logger logger = LogUtil.getLogger();
 	
 	private Board targetBoard;
@@ -64,6 +63,11 @@ public class ArduinoProject extends Project {
 	}
 
 
+
+	@Override
+	public CoderCompiler getCompiler() {
+		return this;
+	}
 
 	@Override
 	public CompileStatus compile(ExecListener listener) {

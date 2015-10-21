@@ -1,13 +1,12 @@
 package com.coder.server.plugin.arduino;
 
-import java.util.logging.Logger;
-
 import com.coder.server.message.ConfigData;
-import zutil.log.LogUtil;
-
+import com.coder.server.plugin.CoderProjectType;
 import com.coder.server.struct.Project;
 import com.coder.server.util.ExtendedProperties;
-import com.coder.server.plugin.CoderProjectType;
+import zutil.log.LogUtil;
+
+import java.util.logging.Logger;
 
 public class ArduinoProjectType implements CoderProjectType {
 	private static final Logger logger = LogUtil.getLogger();

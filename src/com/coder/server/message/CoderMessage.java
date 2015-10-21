@@ -1,28 +1,27 @@
 package com.coder.server.message;
 
+import java.util.HashMap;
 
-import java.util.List;
-import java.util.Map;
 
 public class CoderMessage {
 
     // Authentication messaging
-    public AuthenticationReqMsg         AuthenticationReq;
-    public AuthenticationChallengeMsg   AuthenticationChallenge;
-    public AuthenticationRspMsg         AuthenticationRsp;
-    public AuthenticationSuccessMsg     AuthenticationSuccess;
+    public AuthenticationReqMsg            AuthenticationReq;
+    public AuthenticationChallengeMsg      AuthenticationChallenge;
+    public AuthenticationRspMsg            AuthenticationRsp;
+    public AuthenticationSuccessMsg        AuthenticationSuccess;
 
 
     // Project messaging
-    public ProjectTypeReqMsg            ProjectTypeReq;
-    public Map<String,ConfigData>       ProjectTypeRsp;
+    public ProjectTypeReqMsg               ProjectTypeReq;
+    public HashMap<String,ConfigData>      ProjectTypeRsp;
 
-    public ProjectListReqMsg            ProjectListReq;
-    public Map<String,ProjectListData>  ProjectListRsp;
+    public ProjectListReqMsg               ProjectListReq;
+    public HashMap<String,ProjectListData> ProjectListRsp;
 
-    public ProjectCreateReqMsg          ProjectCreateReq;
-    public ProjectReqMsg                ProjectReq;
-    public ProjectRspMsg                ProjectRsp;
+    public ProjectCreateReqMsg             ProjectCreateReq;
+    public ProjectReqMsg                   ProjectReq;
+    public ProjectRspMsg                   ProjectRsp;
 
 
     // File messaging
@@ -38,7 +37,4 @@ public class CoderMessage {
 
     // Build and run messaging
 
-    // Other messages
-    public Object PortInfoReq;
-    public Object PortInfoRsp;
 }

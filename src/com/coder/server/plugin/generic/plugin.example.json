@@ -1,0 +1,7 @@
+{
+        "version": 1.0,
+        "name": "Generic Plugin",
+        "interfaces": [
+                {"com.coder.server.plugin.CoderProjectType": "com.coder.server.plugin.generic.GenericProjectType"}
+        ]
+}

@@ -4,7 +4,6 @@ import com.coder.server.message.*;
 import com.coder.server.plugin.CoderProjectType;
 import com.coder.server.struct.Project;
 import com.coder.server.struct.User;
-import zutil.Encrypter;
 import zutil.Hasher;
 import zutil.io.MultiPrintStream;
 import zutil.log.InputStreamLogger;
@@ -15,19 +14,13 @@ import zutil.parser.json.JSONObjectInputStream;
 import zutil.parser.json.JSONObjectOutputStream;
 
 import javax.crypto.NoSuchPaddingException;
-import java.io.*;
-import java.lang.reflect.Array;
-import java.lang.reflect.GenericArrayType;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.io.IOException;
 import java.net.Socket;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

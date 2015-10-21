@@ -1,8 +1,5 @@
 package com.coder.server;
 
-import com.coder.server.plugin.CoderProjectType;
-import com.coder.server.plugin.arduino.ArduinoProjectType;
-import com.coder.server.struct.Project;
 import com.coder.server.struct.User;
 import zutil.log.CompactLogFormatter;
 import zutil.log.LogUtil;
@@ -10,13 +7,9 @@ import zutil.net.ssdp.SSDPServer;
 import zutil.net.ssdp.StandardSSDPInfo;
 import zutil.net.threaded.ThreadedTCPNetworkServer;
 import zutil.net.threaded.ThreadedTCPNetworkServerThread;
-import zutil.plugin.PluginData;
-import zutil.plugin.PluginManager;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -47,8 +40,6 @@ public class CoderServer extends ThreadedTCPNetworkServer{
             /******** LOAD PROJECT DATA *********/
             log.info("Loading project data...");
             ProjectManager.initialize();
-            Project proj = new ArduinoProjectType().createProject("First Project");
-            ProjectManager.getInstance().addProject(proj);
 
             /************ JSON ************/
             log.info("Starting up JSON server...");

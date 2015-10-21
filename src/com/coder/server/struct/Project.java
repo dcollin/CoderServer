@@ -1,15 +1,14 @@
 package com.coder.server.struct;
 
-import java.io.File;
-import java.util.List;
-import java.util.Properties;
-
 import com.coder.server.ProjectManager;
 import com.coder.server.message.ConfigData;
 import com.coder.server.plugin.CoderCompiler;
 import com.coder.server.plugin.CoderProjectType;
 
-public abstract class Project implements CoderCompiler {
+import java.util.List;
+import java.util.Properties;
+
+public abstract class Project {
 	private String name = null;
 	private String description = null;
 	private CoderProjectType projectType = null;
@@ -51,15 +50,20 @@ public abstract class Project implements CoderCompiler {
         this.description = description;
     }
 
+
+
+    /**
+     * @return a compiler for the specific project and project type
+     */
+    public abstract CoderCompiler getCompiler();
+
 	/**
-	 * @return the current configuration of the project, should always return a valid object
+	 * @return config data specific for the project type
 	 */
 	public abstract ConfigData getConfiguration();
 
 	/**
-	 * Configure the project with the specific ConfigData.
-	 * @param 	data
+	 * @param 	data    Configure the project with the specific project type data.
 	 */
 	public abstract void setConfiguration(ConfigData data);
-
 }
