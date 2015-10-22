@@ -53,7 +53,7 @@ public class CoderConnectionThread implements ThreadedTCPNetworkServerThread {
             CoderMessage msg = null;
             while((msg=in.readGenericObject()) != null){
                 // DEBUG: Dump the received message to the terminal
-                MultiPrintStream.out.dump(msg);
+                //MultiPrintStream.out.dump(msg);
 
                 CoderMessage rspMsg = new CoderMessage();
                 //********* PROJECT HANDLING *********
