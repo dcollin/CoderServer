@@ -124,6 +124,27 @@
 			<fileset dir="${releaseDir}" includes="**/*"/>
 		</delete>
 	</target>
+
+	<target name="test-create-conf">
+        <!-- Users -->
+        <mkdir dir="${releaseDir}/user" />
+        <propertyfile file="${releaseDir}/user/ziver.properties">
+            <entry  key="username" value="ziver" />
+            <entry  key="passhash" value="b5f7e4383ad4f6840b96647275516d388526eca1044acd883a03a7c05878f06b" />
+        </propertyfile>
+        <propertyfile file="${releaseDir}/user/daniel.properties">
+            <entry  key="username" value="daniel" />
+            <entry  key="passhash" value="c61485b41343232a103438dcd85530557f9384fedad9b84a4622fc5a53ec3997" />
+        </propertyfile>
+
+        <!-- Projects -->
+        <mkdir dir="${releaseDir}/project/New_Project/" />
+        <propertyfile file="${releaseDir}/project/New_Project/.project">
+            <entry  key="name" value="New Project" />
+            <entry  key="description" value="My First Arduino project" />
+            <entry  key="type" value="Arduino" />
+        </propertyfile>
+	</target>
 	
 	<!-- ________________________ CODER SERVER ________________________ -->
 	

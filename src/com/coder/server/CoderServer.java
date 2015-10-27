@@ -28,14 +28,7 @@ public class CoderServer extends ThreadedTCPNetworkServer{
 
             /********* LOAD USER DATA **********/
             log.info("Loading user data...");
-            // TODO: add actual database/file setup
             UserManager.initialize();
-            User user1 = new User("ziver");
-            user1.setPassword("bytesut");
-            UserManager.getInstance().addUser(user1);
-            User user2 = new User("daniel");
-            user2.setPassword("bytesut");
-            UserManager.getInstance().addUser(user2);
 
             /******** LOAD PROJECT DATA *********/
             log.info("Loading project data...");
