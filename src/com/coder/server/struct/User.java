@@ -5,9 +5,11 @@ import zutil.Hasher;
 import java.util.Properties;
 
 /**
- * Created by Ziver on 2015-09-29.
+ * Created by Ziver
  */
 public class User {
+    public static final String USER_USERNAME_PROPERTY = "username";
+    public static final String USER_PASSHASH_PROPERTY = "passhash";
     public static final int PASSWORD_HASH_ITERATIONS = 500;
 
     private String username;
@@ -17,15 +19,18 @@ public class User {
     public User(String username){
         this.username = username;
     }
+    public User(Properties userProp){
+        setProperties(userProp);
+    }
 
-    public User(Properties userProp) {
-        this.username = userProp.getProperty("username");
-        this.passwordHash = userProp.getProperty("passhash");
+    public void setProperties(Properties userProp) {
+        this.username = userProp.getProperty(USER_USERNAME_PROPERTY);
+        this.passwordHash = userProp.getProperty(USER_PASSHASH_PROPERTY);
     }
     public Properties getProperties(){
         Properties userProp = new Properties();
-        userProp.setProperty("username", username);
-        userProp.getProperty("passhash", passwordHash);
+        userProp.setProperty(USER_USERNAME_PROPERTY, username);
+        userProp.getProperty(USER_PASSHASH_PROPERTY, passwordHash);
         return userProp;
     }
 

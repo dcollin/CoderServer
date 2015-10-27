@@ -9,6 +9,10 @@ import java.util.List;
 import java.util.Properties;
 
 public abstract class Project {
+    public static final String PROJECT_NAME_PROPERTY = "name";
+    public static final String PROJECT_DESC_PROPERTY = "description";
+    public static final String PROJECT_TYPE_PROPERTY = "type";
+
 	private String name = null;
 	private String description = null;
 	private CoderProjectType projectType = null;
@@ -17,16 +21,16 @@ public abstract class Project {
 		this.name = name;
 		this.projectType = projectType;
 	}
-	public Project(Properties userProp) {
-		this.name = userProp.getProperty("name");
-		this.description = userProp.getProperty("description");
-		this.projectType = ProjectManager.getInstance().getProjectType(userProp.getProperty("type"));
+
+	public void setProperties(Properties userProp) {
+		this.name = userProp.getProperty(PROJECT_NAME_PROPERTY);
+		this.description = userProp.getProperty(PROJECT_DESC_PROPERTY);
 	}
 	public Properties getProperties(){
 		Properties userProp = new Properties();
-		userProp.setProperty("name", name);
-		userProp.setProperty("description", description);
-		userProp.getProperty("type", projectType.getName());
+		userProp.setProperty(PROJECT_NAME_PROPERTY, name);
+		userProp.setProperty(PROJECT_DESC_PROPERTY, description);
+        userProp.getProperty(PROJECT_TYPE_PROPERTY, projectType.getName());
 		return userProp;
 	}
 

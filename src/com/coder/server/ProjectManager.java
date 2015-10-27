@@ -3,12 +3,16 @@ package com.coder.server;
 import com.coder.server.plugin.CoderProjectType;
 import com.coder.server.plugin.generic.GenericProjectType;
 import com.coder.server.struct.Project;
+import com.coder.server.struct.User;
 import zutil.log.LogUtil;
 import zutil.plugin.PluginData;
 import zutil.plugin.PluginManager;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 /**
@@ -55,23 +59,34 @@ public class ProjectManager implements Iterable<Project>{
         return instance;
     }
 
-    protected static synchronized void initialize(){
+    protected static synchronized void initialize() throws IOException {
         ProjectManager newInstance = new ProjectManager();
 
         /*********** LOAD PLUGINS **********/
-        logger.info("Loading project plugins...");
+        logger.info("Loading project type plugins...");
         newInstance.addProjectType(new GenericProjectType());
         PluginManager<?> projPlugins = new PluginManager<>();
         for(PluginData plugin : projPlugins){
             for(Iterator<CoderProjectType> it = plugin.getIterator(CoderProjectType.class); it.hasNext();){
                 CoderProjectType p = it.next();
+                logger.info("Found project type: " + p.getName());
                 newInstance.addProjectType(p);
             }
         }
 
         /*********** LOAD PLUGINS **********/
         logger.info("Loading projects...");
-        // TODO: load project duh!
+        for(Properties projProp : ConfigManager.getInstance().getProjectConfs()) {
+            logger.info("Found project: " + projProp.getProperty(Project.PROJECT_NAME_PROPERTY));
+            CoderProjectType projType = newInstance.getProjectType(projProp.getProperty(Project.PROJECT_TYPE_PROPERTY));
+            if(projType == null){
+                logger.severe("Unknown ProjectType: " + projProp.getProperty(Project.PROJECT_TYPE_PROPERTY));
+                continue;
+            }
+            Project proj = projType.createProject(projProp.getProperty(Project.PROJECT_NAME_PROPERTY));
+            proj.setProperties(projProp);
+            newInstance.addProject(proj);
+        }
 
         instance = newInstance;
     }

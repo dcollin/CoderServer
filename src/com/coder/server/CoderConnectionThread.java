@@ -146,9 +146,10 @@ public class CoderConnectionThread implements ThreadedTCPNetworkServerThread {
         }
 
         // Send AuthenticationChallenge
+        String salt = Integer.toString((int)(Math.random()*1_000_000));
         CoderMessage challenge = new CoderMessage();
         challenge.AuthenticationChallenge = new AuthenticationChallengeMsg();
-        challenge.AuthenticationChallenge.salt = Integer.toString((int)(Math.random()*1_000_000));
+        challenge.AuthenticationChallenge.salt = salt;
         out.writeObject(challenge);
         out.flush();
 
@@ -166,6 +167,11 @@ public class CoderConnectionThread implements ThreadedTCPNetworkServerThread {
         msg = in.readGenericObject();
         if(msg == null || msg.AuthenticationRsp == null){
             logger.severe("Expected message AuthenticationRsp.");
+            return null;
+        }
+        String hash = Hasher.PBKDF2(user.getPasswordHash(), salt, 500);
+        if(!hash.equals(msg.AuthenticationRsp.hash)){
+            logger.severe("Wrong AuthenticationRsp hash provided: '"+msg.AuthenticationRsp.hash+"' (Expected: '"+hash+"')");
             return null;
         }
 
