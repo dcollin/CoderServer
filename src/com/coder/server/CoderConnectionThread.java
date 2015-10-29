@@ -117,7 +117,7 @@ public class CoderConnectionThread implements ThreadedTCPNetworkServerThread {
                 out.flush();
             }
         }catch (Exception e){
-            logger.log(Level.SEVERE, e.getClass().getName() +": "+ e.getMessage());
+            logger.log(Level.SEVERE, null, e);
         }
         finally {
             close();
