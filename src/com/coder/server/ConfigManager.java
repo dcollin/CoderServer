@@ -1,5 +1,6 @@
 package com.coder.server;
 
+import com.coder.server.struct.Project;
 import zutil.log.LogUtil;
 
 import java.io.File;
@@ -92,12 +93,17 @@ public class ConfigManager {
     }
 
 
+    public File getProjectRoot(Project project){
+        return getProjectRoot(project.getName());
+    }
     public File getProjectRoot(String projectName){
         return new File(projectPath, cleanString(projectName));
     }
     public Properties getProjectConf(String projectName) throws IOException {
-        return getProjectConf(
-                new File(getProjectRoot(projectName), PROJECT_CONF));
+        return getProjectConf(getProjectConfFile(projectName));
+    }
+    public File getProjectConfFile(String projectName){
+        return new File(getProjectRoot(projectName), PROJECT_CONF);
     }
     private Properties getProjectConf(File projConf) throws IOException {
         if(projConf.isFile()) { // is there a config file?
@@ -122,7 +128,15 @@ public class ConfigManager {
         }
         return list;
     }
-
+    public void saveProjectConf(Project project, Properties projProp) throws IOException {
+        File root = getProjectRoot(project);
+        if(!root.isDirectory())
+            root.mkdirs();
+        File propFile = getProjectConfFile(project.getName());
+        FileWriter out = new FileWriter(propFile);
+        projProp.store(out, null);
+        out.close();
+    }
 
 
 
@@ -148,4 +162,6 @@ public class ConfigManager {
     public static ConfigManager getInstance(){
         return instance;
     }
+
+
 }

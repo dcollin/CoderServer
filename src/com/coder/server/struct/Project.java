@@ -22,19 +22,7 @@ public abstract class Project {
 		this.projectType = projectType;
 	}
 
-	public void setProperties(Properties userProp) {
-		this.name = userProp.getProperty(PROJECT_NAME_PROPERTY);
-		this.description = userProp.getProperty(PROJECT_DESC_PROPERTY);
-	}
-	public Properties getProperties(){
-		Properties userProp = new Properties();
-		userProp.setProperty(PROJECT_NAME_PROPERTY, name);
-		userProp.setProperty(PROJECT_DESC_PROPERTY, description);
-        userProp.getProperty(PROJECT_TYPE_PROPERTY, projectType.getName());
-		return userProp;
-	}
 
-	
 	public List<String> getFileList(){
 		return null;
 	}
@@ -57,17 +45,21 @@ public abstract class Project {
 
 
     /**
+     * Should be overridden by ProjectType specific project and set proprietary configuration
+     *
+     * @param 	userProp    Configure the project with the specific project type data.
+     */
+    public void setConfiguration(Properties userProp) { };
+    /**
+     * Should be overridden by ProjectType specific project and return proprietary configuration
+     *
+     * @return config data specific for the project type (default: null)
+     */
+    public Properties getConfiguration() { return null; };
+
+    /**
      * @return a compiler for the specific project and project type
      */
     public abstract CoderCompiler getCompiler();
 
-	/**
-	 * @return config data specific for the project type
-	 */
-	public abstract ConfigData getConfiguration();
-
-	/**
-	 * @param 	data    Configure the project with the specific project type data.
-	 */
-	public abstract void setConfiguration(ConfigData data);
 }

@@ -10,6 +10,7 @@ import com.coder.server.struct.Project;
 import com.coder.server.util.ExtendedProperties;
 import zutil.log.LogUtil;
 
+import java.util.Properties;
 import java.util.logging.Logger;
 
 public class ArduinoProject extends Project implements CoderCompiler{
@@ -87,13 +88,20 @@ public class ArduinoProject extends Project implements CoderCompiler{
 		return this.targetBauderate;
 	}
 
+
 	@Override
-	public ConfigData getConfiguration() {
+	public Properties getConfiguration() {
+		Properties prop = new Properties();
+		//prop.setProperty("target_board", targetBoard.getName());
+		prop.setProperty("target_port", ""+targetPort);
+		prop.setProperty("target_baud", ""+targetBauderate);
 		return null;
 	}
 
 	@Override
-	public void setConfiguration(ConfigData data) {
-
+	public void setConfiguration(Properties prop) {
+		//targetBoard = prop.getProperty("target_board");
+		if(prop.contains("target_port")) targetPort = prop.getProperty("target_port");
+        if(prop.contains("target_baud")) targetBauderate = Integer.parseInt(prop.getProperty("target_baud"));
 	}
 }

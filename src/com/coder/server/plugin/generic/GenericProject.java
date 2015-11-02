@@ -14,18 +14,9 @@ public class GenericProject extends Project {
         super(name, projectType);
     }
 
-    @Override
-    public ConfigData getConfiguration() {
-        return null;
-    }
 
     @Override
     public CoderCompiler getCompiler() {
         return null;
-    }
-
-    @Override
-    public void setConfiguration(ConfigData data) {
-
     }
 }

@@ -10,7 +10,8 @@ import java.util.HashMap;
  * This is a generic project type that has no compiler defined
  */
 public class GenericProjectType implements CoderProjectType {
-    private HashMap<String,GenericProject> projects;
+    private HashMap<String,GenericProject> projects = projects = new HashMap<>();
+
 
     @Override
     public void init() { }

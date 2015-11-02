@@ -96,6 +96,7 @@ public class CoderConnectionThread implements ThreadedTCPNetworkServerThread {
                             if(msg.ProjectCreateReq.description != null)
                                 proj.setDescription(msg.ProjectCreateReq.description);
                             ProjectManager.getInstance().addProject(proj);
+                            ProjectManager.getInstance().saveProject(proj);
                         }
                         else
                             rspMsg.ProjectRsp.error = "No such project type found.";

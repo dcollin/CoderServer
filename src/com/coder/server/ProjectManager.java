@@ -8,6 +8,7 @@ import zutil.log.LogUtil;
 import zutil.plugin.PluginData;
 import zutil.plugin.PluginManager;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -53,6 +54,18 @@ public class ProjectManager implements Iterable<Project>{
         return projects.values().iterator();
     }
 
+    public void saveProject(Project project) throws IOException {
+        logger.info("Saving project('"+ project.getName() +"') config...");
+        Properties projProp = project.getConfiguration();
+        if(projProp == null)
+            projProp = new Properties();
+        projProp.setProperty(Project.PROJECT_NAME_PROPERTY, project.getName());
+        projProp.setProperty(Project.PROJECT_TYPE_PROPERTY, project.getProjectType().getName());
+        if(project.getDescription() != null)
+            projProp.setProperty(Project.PROJECT_DESC_PROPERTY, project.getDescription());
+
+        ConfigManager.getInstance().saveProjectConf(project, projProp);
+    }
 
 
     public static ProjectManager getInstance(){
@@ -71,10 +84,11 @@ public class ProjectManager implements Iterable<Project>{
                 CoderProjectType p = it.next();
                 logger.info("Found project type: " + p.getName());
                 newInstance.addProjectType(p);
+                p.init();
             }
         }
 
-        /*********** LOAD PLUGINS **********/
+        /*********** LOAD PROJECTS **********/
         logger.info("Loading projects...");
         for(Properties projProp : ConfigManager.getInstance().getProjectConfs()) {
             logger.info("Found project: " + projProp.getProperty(Project.PROJECT_NAME_PROPERTY));
@@ -84,7 +98,7 @@ public class ProjectManager implements Iterable<Project>{
                 continue;
             }
             Project proj = projType.createProject(projProp.getProperty(Project.PROJECT_NAME_PROPERTY));
-            proj.setProperties(projProp);
+            proj.setConfiguration(projProp);
             newInstance.addProject(proj);
         }
 
