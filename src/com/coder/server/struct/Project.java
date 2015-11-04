@@ -1,7 +1,5 @@
 package com.coder.server.struct;
 
-import com.coder.server.ProjectManager;
-import com.coder.server.message.ConfigData;
 import com.coder.server.plugin.CoderCompiler;
 import com.coder.server.plugin.CoderProjectType;
 

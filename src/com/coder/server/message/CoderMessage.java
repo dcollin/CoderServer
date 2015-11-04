@@ -14,10 +14,10 @@ public class CoderMessage {
 
     // Project messaging
     public ProjectTypeReqMsg               ProjectTypeReq;
-    public HashMap<String,ConfigData>      ProjectTypeRsp;
+    public ProjectTypeRspMsg               ProjectTypeRsp;
 
     public ProjectListReqMsg               ProjectListReq;
-    public HashMap<String,ProjectListData> ProjectListRsp;
+    public ProjectListRspMsg               ProjectListRsp;
 
     public ProjectCreateReqMsg             ProjectCreateReq;
     public ProjectReqMsg                   ProjectReq;

@@ -1,6 +1,5 @@
 package com.coder.server.plugin.generic;
 
-import com.coder.server.message.ConfigData;
 import com.coder.server.plugin.CoderCompiler;
 import com.coder.server.plugin.CoderProjectType;
 import com.coder.server.struct.Project;

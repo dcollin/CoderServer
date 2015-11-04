@@ -1,6 +1,6 @@
 package com.coder.server.plugin.generic;
 
-import com.coder.server.message.ConfigData;
+import com.coder.server.message.SupportedProperties;
 import com.coder.server.plugin.CoderProjectType;
 import com.coder.server.struct.Project;
 
@@ -22,7 +22,7 @@ public class GenericProjectType implements CoderProjectType {
     }
 
     @Override
-    public ConfigData getSupportedConfiguration() {
+    public SupportedProperties getSupportedConfiguration() {
         return null;
     }
 

@@ -1,6 +1,6 @@
 package com.coder.server.plugin;
 
-import com.coder.server.message.ConfigData;
+import com.coder.server.message.SupportedProperties;
 import com.coder.server.struct.Project;
 
 /**
@@ -12,7 +12,7 @@ public interface CoderProjectType {
 
 	public String getName();
 
-    public ConfigData getSupportedConfiguration();
+    public SupportedProperties getSupportedConfiguration();
 
 	public Project createProject(String name);
 

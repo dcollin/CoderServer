@@ -1,6 +1,6 @@
 package com.coder.server.plugin.arduino;
 
-import com.coder.server.message.ConfigData;
+import com.coder.server.message.SupportedProperties;
 import com.coder.server.plugin.CoderProjectType;
 import com.coder.server.struct.Project;
 import com.coder.server.util.ExtendedProperties;
@@ -39,7 +39,7 @@ public class ArduinoProjectType implements CoderProjectType {
 	}
 
 	@Override
-	public ConfigData getSupportedConfiguration() {
+	public SupportedProperties getSupportedConfiguration() {
 		return null;
 	}
 }

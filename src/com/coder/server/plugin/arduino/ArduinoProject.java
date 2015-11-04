@@ -1,6 +1,5 @@
 package com.coder.server.plugin.arduino;
 
-import com.coder.server.message.ConfigData;
 import com.coder.server.plugin.CoderCompiler;
 import com.coder.server.plugin.CoderProjectType;
 import com.coder.server.plugin.ExecInstance;

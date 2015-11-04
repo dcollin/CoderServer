@@ -8,5 +8,5 @@ public class ProjectListData {
     public String description;
 
     /** OPTIONAL **/
-    //public ConfigData config;
+    //public Properties config;
 }

@@ -58,7 +58,7 @@ public class CoderConnectionThread implements ThreadedTCPNetworkServerThread {
                 CoderMessage rspMsg = new CoderMessage();
                 //********* PROJECT HANDLING *********
                 if(msg.ProjectTypeReq != null){
-                    rspMsg.ProjectTypeRsp = new HashMap<>();
+                    rspMsg.ProjectTypeRsp = new ProjectTypeRspMsg();
                     // Send a single project type
                     if(msg.ProjectTypeReq.type != null){
                         CoderProjectType type = ProjectManager.getInstance()
@@ -76,7 +76,7 @@ public class CoderConnectionThread implements ThreadedTCPNetworkServerThread {
                     }
                 }
                 if(msg.ProjectListReq != null){
-                    rspMsg.ProjectListRsp = new HashMap<>();
+                    rspMsg.ProjectListRsp = new ProjectListRspMsg();
                     for(Project proj : ProjectManager.getInstance()){
                         ProjectListData data = new ProjectListData();
                         data.type = proj.getProjectType().getName();
