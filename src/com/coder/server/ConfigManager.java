@@ -3,10 +3,7 @@ package com.coder.server;
 import com.coder.server.struct.Project;
 import zutil.log.LogUtil;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -30,30 +27,16 @@ public class ConfigManager {
     private static ConfigManager instance;
 
     // Object fields
+    private File serverConfFile;
     private File userPath;
     private File projectPath;
-    private Properties serverConf;
 
 
     private ConfigManager() throws IOException {
-        File rootPath    = new File(ROOT_PATH);
-        this.userPath    = new File(rootPath, USER_PATH);
-        this.projectPath = new File(rootPath, PROJECT_PATH);
-
-        File serverConfFile = new File(rootPath, SERVER_CONF);
-        if(serverConfFile.exists() && serverConfFile.isFile()) {
-            serverConf = new Properties();
-            FileReader in = new FileReader(serverConfFile);
-            serverConf.load(in);
-            in.close();
-        }
-        else{
-            serverConf = new Properties(getDefaultServerConf());
-            serverConfFile.getParentFile().mkdirs();
-            FileWriter out = new FileWriter(serverConfFile);
-            getDefaultServerConf().store(out, "This is a auto generated config file");
-            out.close();
-        }
+        File rootPath       = new File(ROOT_PATH);
+        this.serverConfFile = new File(rootPath, SERVER_CONF);
+        this.userPath       = new File(rootPath, USER_PATH);
+        this.projectPath    = new File(rootPath, PROJECT_PATH);
 
         // Create folders
         if(!this.userPath.exists())
@@ -63,8 +46,21 @@ public class ConfigManager {
     }
 
 
-    public Properties getServerConf(){
-        return serverConf;
+    public Properties getServerConf() throws IOException {
+        if(serverConfFile.exists() && serverConfFile.isFile()) {
+            Properties serverConf = new Properties();
+            FileReader in = new FileReader(serverConfFile);
+            serverConf.load(in);
+            in.close();
+            return serverConf;
+        }
+        return null;
+    }
+    public void saveServerConf(Properties serverConf) throws IOException {
+        serverConfFile.getParentFile().mkdirs();
+        FileWriter out = new FileWriter(serverConfFile);
+        serverConf.store(out, null);
+        out.close();
     }
 
 
@@ -136,14 +132,6 @@ public class ConfigManager {
         FileWriter out = new FileWriter(propFile);
         projProp.store(out, null);
         out.close();
-    }
-
-
-
-    private static Properties getDefaultServerConf(){
-        Properties conf = new Properties();
-        conf.setProperty("port", "1337");
-        return conf;
     }
 
 

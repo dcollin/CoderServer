@@ -9,13 +9,17 @@ import zutil.net.threaded.ThreadedTCPNetworkServer;
 import zutil.net.threaded.ThreadedTCPNetworkServerThread;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class CoderServer extends ThreadedTCPNetworkServer{
     public static final Logger log = LogUtil.getLogger();
-    public static final int SERVER_PORT = 1337;
+    public static final String SERVER_NAME_PROPERTY = "name";
+    public static final String SERVER_PORT_PROPERTY = "port";
 
 
     public static void main(String[] args){
@@ -25,6 +29,11 @@ public class CoderServer extends ThreadedTCPNetworkServer{
 
             /********* Reading Configuration **********/
             ConfigManager.initialize();
+            Properties serverConf = ConfigManager.getInstance().getServerConf();
+            if(serverConf == null) { // No server conf found
+                serverConf = getDefaultServerConf();
+                ConfigManager.getInstance().saveServerConf(serverConf);
+            }
 
             /********* LOAD USER DATA **********/
             log.info("Loading user data...");
@@ -36,13 +45,17 @@ public class CoderServer extends ThreadedTCPNetworkServer{
 
             /************ JSON ************/
             log.info("Starting up JSON server...");
-            CoderServer json = new CoderServer();
+            CoderServer json = new CoderServer(
+                    Integer.parseInt(serverConf.getProperty(SERVER_PORT_PROPERTY)));
             json.start();
 
             /************ SSDP ************/
             log.info("starting up SSDP server...");
+            HashMap<String,String> headers = new HashMap<>();
+            headers.put("Server", serverConf.getProperty(SERVER_NAME_PROPERTY));
             StandardSSDPInfo service = new StandardSSDPInfo();
-            service.setLocation("nowhere");
+            service.setHeaders(headers);
+            service.setLocation(InetAddress.getLocalHost().getHostAddress() +":"+ serverConf.getProperty(SERVER_PORT_PROPERTY));
             service.setST("coder:discover");
 
             SSDPServer ssdp = new SSDPServer();
@@ -56,8 +69,8 @@ public class CoderServer extends ThreadedTCPNetworkServer{
     }
 
 
-    public CoderServer() {
-        super(SERVER_PORT);
+    public CoderServer(int port) {
+        super(port);
     }
 
     @Override
@@ -68,5 +81,13 @@ public class CoderServer extends ThreadedTCPNetworkServer{
             log.log(Level.SEVERE, null, e);
         }
         return null;
+    }
+
+
+    public static Properties getDefaultServerConf(){
+        Properties conf = new Properties();
+        conf.setProperty(SERVER_NAME_PROPERTY, "Coder Server");
+        conf.setProperty(SERVER_PORT_PROPERTY, "1337");
+        return conf;
     }
 }
