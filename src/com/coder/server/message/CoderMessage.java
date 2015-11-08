@@ -25,14 +25,9 @@ public class CoderMessage {
 
 
     // File messaging
-    public Object FileCreateReq;
-    public Object FileCreateRsp;
-
-    public Object FileReq;
-    public Object FileRsp;
-
-    public Object FileSaveReq;
-    public Object FileSaveRsp;
+    public FileCreateReqMsg                FileCreateReq;
+    public FileReqMsg FileReq;
+    public FileRspMsg FileRsp;
 
 
     // Build and run messaging

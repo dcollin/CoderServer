@@ -23,14 +23,11 @@ public class ProjectManager implements Iterable<Project>{
     private static final Logger logger = LogUtil.getLogger();
     private static ProjectManager instance;
 
-    private HashMap<String,CoderProjectType> projectTypes;
-    private HashMap<String,Project> projects;
+    private HashMap<String,CoderProjectType> projectTypes = new HashMap<>();
+    private HashMap<String,Project> projects = new HashMap<>();
 
 
-    private ProjectManager(){
-        projectTypes = new HashMap<>();
-        projects = new HashMap<>();
-    }
+    private ProjectManager(){ }
 
 
     public CoderProjectType getProjectType(String name){

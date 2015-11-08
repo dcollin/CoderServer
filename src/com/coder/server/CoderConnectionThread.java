@@ -5,7 +5,9 @@ import com.coder.server.plugin.CoderProjectType;
 import com.coder.server.struct.Project;
 import com.coder.server.struct.User;
 import zutil.Hasher;
+import zutil.io.IOUtil;
 import zutil.io.MultiPrintStream;
+import zutil.io.file.FileUtil;
 import zutil.log.InputStreamLogger;
 import zutil.log.LogUtil;
 import zutil.log.OutputStreamLogger;
@@ -14,7 +16,10 @@ import zutil.parser.json.JSONObjectInputStream;
 import zutil.parser.json.JSONObjectOutputStream;
 
 import javax.crypto.NoSuchPaddingException;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.Socket;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -35,6 +40,7 @@ public class CoderConnectionThread implements ThreadedTCPNetworkServerThread {
     private JSONObjectOutputStream out;
 
     private User user = null;
+    private Project project = null;
 
 
     public CoderConnectionThread(Socket socket) throws IOException {
@@ -56,7 +62,8 @@ public class CoderConnectionThread implements ThreadedTCPNetworkServerThread {
                 //MultiPrintStream.out.dump(msg);
 
                 CoderMessage rspMsg = new CoderMessage();
-                //********* PROJECT HANDLING *********
+                //******************************************************
+                //****************** PROJECT HANDLING ******************
                 if(msg.ProjectTypeReq != null){
                     rspMsg.ProjectTypeRsp = new ProjectTypeRspMsg();
                     // Send a single project type
@@ -106,6 +113,7 @@ public class CoderConnectionThread implements ThreadedTCPNetworkServerThread {
                         proj = ProjectManager.getInstance().getProject(msg.ProjectReq.name);
 
                     if(proj != null){
+                        this.project = proj;
                         rspMsg.ProjectRsp.name = proj.getName();
                         rspMsg.ProjectRsp.type = proj.getProjectType().getName();
                         rspMsg.ProjectRsp.description = proj.getDescription();
@@ -114,6 +122,41 @@ public class CoderConnectionThread implements ThreadedTCPNetworkServerThread {
                     }
                     else if(rspMsg.ProjectRsp.error == null) // Do we already have a error msg?
                         rspMsg.ProjectRsp.error = "No such project found.";
+                }
+
+                //***************************************************
+                //****************** FILE HANDLING ******************
+                if(msg.FileReq != null || msg.FileCreateReq != null){
+                    rspMsg.FileRsp = new FileRspMsg();
+                    String path = null;
+                    File file = null;
+                    if(project != null) {
+                        // Create new file
+                        if (msg.FileCreateReq != null) {
+                            path = msg.FileCreateReq.path;
+                            file = FileManager.getInstance().getFile(project, path);
+                            file.createNewFile();
+                        }
+                        // Get existing file
+                        else {
+                            path = msg.FileReq.path;
+                            file = FileManager.getInstance().getFile(project, path);
+                        }
+
+                        if(rspMsg.FileRsp.error != null) { // Do we already have a error msg?
+                            if (file != null && file.exists()) {
+                                try {
+                                    rspMsg.FileRsp.path = file.getName();
+                                    rspMsg.FileRsp.data = FileUtil.getByteContent(file);
+                                } catch (IOException e) {
+                                    rspMsg.FileRsp.error = "Unable to read file.";
+                                }
+                            } else
+                                rspMsg.FileRsp.error = "No such file found.";
+                        }
+                    }
+                    else
+                        rspMsg.FileRsp.error = "No project set.";
                 }
 
                 out.writeObject(rspMsg);

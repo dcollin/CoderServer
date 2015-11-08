@@ -13,6 +13,9 @@ import java.util.logging.Logger;
  * This class handles all configuration for the Coder Server
  */
 public class ConfigManager {
+    private static final Logger logger = LogUtil.getLogger();
+    private static ConfigManager instance;
+
     // Folders
     private static final String ROOT_PATH = "./";
     private static final String USER_PATH = "user/";
@@ -23,8 +26,6 @@ public class ConfigManager {
     private static final String PROJECT_CONF = ".project";
     private static final String USER_CONF_EXT = ".properties";
 
-    private static final Logger logger = LogUtil.getLogger();
-    private static ConfigManager instance;
 
     // Object fields
     private File serverConfFile;
