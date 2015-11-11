@@ -96,6 +96,9 @@ public class ProjectManager implements Iterable<Project>{
             }
             Project proj = projType.createProject(projProp.getProperty(Project.PROJECT_NAME_PROPERTY));
             proj.setConfiguration(projProp);
+            List<String> fileList = FileManager.getInstance().getProjectFileList(proj);
+            for(String file : fileList)
+                proj.getFileList().add(file);
             newInstance.addProject(proj);
         }
 

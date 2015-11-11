@@ -41,6 +41,7 @@ public class CoderServer extends ThreadedTCPNetworkServer{
 
             /******** LOAD PROJECT DATA *********/
             log.info("Loading project data...");
+            FileManager.initialize();
             ProjectManager.initialize();
 
             /************ JSON ************/
@@ -51,10 +52,8 @@ public class CoderServer extends ThreadedTCPNetworkServer{
 
             /************ SSDP ************/
             log.info("starting up SSDP server...");
-            HashMap<String,String> headers = new HashMap<>();
-            headers.put("Server", serverConf.getProperty(SERVER_NAME_PROPERTY));
             StandardSSDPInfo service = new StandardSSDPInfo();
-            service.setHeaders(headers);
+            service.setHeader("Server", SERVER_NAME_PROPERTY);
             service.setLocation(InetAddress.getLocalHost().getHostAddress() +":"+ serverConf.getProperty(SERVER_PORT_PROPERTY));
             service.setST("coder:discover");
 
@@ -69,7 +68,7 @@ public class CoderServer extends ThreadedTCPNetworkServer{
     }
 
 
-    public CoderServer(int port) {
+    public CoderServer(int port) throws Exception{
         super(port);
     }
 

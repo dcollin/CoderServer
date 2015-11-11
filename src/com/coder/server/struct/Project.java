@@ -3,6 +3,7 @@ package com.coder.server.struct;
 import com.coder.server.plugin.CoderCompiler;
 import com.coder.server.plugin.CoderProjectType;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -13,16 +14,18 @@ public abstract class Project {
 
 	private String name = null;
 	private String description = null;
-	private CoderProjectType projectType = null;
+	private CoderProjectType projectType;
+    private ArrayList<String> fileList;
 	
 	public Project(String name, CoderProjectType projectType){
 		this.name = name;
 		this.projectType = projectType;
+        this.fileList = new ArrayList<>();
 	}
 
 
-	public List<String> getFileList(){
-		return null;
+	public ArrayList<String> getFileList(){
+		return fileList;
 	}
 	
 	public CoderProjectType getProjectType(){

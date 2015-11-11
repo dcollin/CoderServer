@@ -1,6 +1,6 @@
 package com.coder.server.message;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Properties;
 
 
@@ -10,7 +10,7 @@ public class ProjectRspMsg {
     public String type;
     public String description;
     public Properties config;
-    public List<String> fileList;
+    public ArrayList<String> fileList;
 
     /** OPTIONAL **/
     public String error;
