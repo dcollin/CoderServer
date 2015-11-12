@@ -6,6 +6,8 @@ import com.coder.server.struct.Project;
 import com.coder.server.util.ExtendedProperties;
 import zutil.log.LogUtil;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 public class ArduinoProjectType implements CoderProjectType {
@@ -40,6 +42,9 @@ public class ArduinoProjectType implements CoderProjectType {
 
 	@Override
 	public SupportedProperties getSupportedConfiguration() {
-		return null;
+		SupportedProperties suppProp = new SupportedProperties();
+		suppProp.addSupportedPropertyValue("port", "com1");
+        suppProp.addSupportedPropertyValue("port", "com2");
+		return suppProp;
 	}
 }

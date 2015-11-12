@@ -23,7 +23,7 @@ public class GenericProjectType implements CoderProjectType {
 
     @Override
     public SupportedProperties getSupportedConfiguration() {
-        return null;
+        return new SupportedProperties();
     }
 
     @Override
