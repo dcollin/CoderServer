@@ -138,8 +138,8 @@
         </propertyfile>
 
         <!-- Projects -->
-        <mkdir dir="${releaseDir}/project/New_Project/" />
-        <propertyfile file="${releaseDir}/project/New_Project/.project">
+        <mkdir dir="${releaseDir}/project/new_project/" />
+        <propertyfile file="${releaseDir}/project/new_project/.project">
             <entry  key="name" value="New Project" />
             <entry  key="description" value="My First Arduino project" />
             <entry  key="type" value="Arduino" />

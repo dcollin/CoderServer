@@ -38,12 +38,13 @@ public class FileManager {
         search.searchCompressedFiles(false);
         String rootStr = projectRoot.getCanonicalPath();
         for(FileSearcher.FileSearchItem file : search){
-            if(file.getPath().startsWith(rootStr)){
-                String path = file.getPath().substring(rootStr.length());
+            String fileStr = new File(file.getPath()).getCanonicalPath();
+            if(fileStr.startsWith(rootStr)){
+                String path = fileStr.substring(rootStr.length());
                 fileList.add(path);
             }
             else
-                logger.severe("File not under project root! Project: '"+ rootStr +"' File: '"+ file.getPath() +"'");
+                logger.severe("File not under project root! Project: '"+ rootStr +"' File: '"+ fileStr +"'");
         }
         return fileList;
     }
