@@ -41,6 +41,7 @@ public class FileManager {
             String fileStr = new File(file.getPath()).getCanonicalPath();
             if(fileStr.startsWith(rootStr)){
                 String path = fileStr.substring(rootStr.length());
+                path = path.replaceAll("\\\\", "/");
                 fileList.add(path);
             }
             else
