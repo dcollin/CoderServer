@@ -1,11 +1,10 @@
 package com.coder.server.message;
 
 /**
- * Created by Ziver on 2015-11-08.
+ * Created by Ziver on 2015-11-13.
  */
-public class FileRspMsg {
+public class FileDeleteRspMsg {
     public String path;
-    public byte[] data;
 
     /* EXCEPTION */
     public String error;

@@ -1,5 +1,6 @@
 package com.coder.server.plugin.arduino;
 
+import com.coder.server.message.BuildProjectReqMsp;
 import com.coder.server.plugin.CoderCompiler;
 import com.coder.server.plugin.CoderProjectType;
 import com.coder.server.plugin.ExecInstance;
@@ -70,8 +71,8 @@ public class ArduinoProject extends Project implements CoderCompiler{
 	}
 
 	@Override
-	public CompileStatus compile(ExecListener listener) {
-		return this.compiler.compile(this, listener);
+	public BuildProjectReqMsp.CompileStatus compile(ExecListener listener) {
+		return BuildProjectReqMsp.CompileStatus.SUCCESS;//this.compiler.compile(this, listener);
 	}
 
 	@Override

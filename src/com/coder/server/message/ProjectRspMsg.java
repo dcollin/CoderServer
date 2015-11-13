@@ -12,6 +12,6 @@ public class ProjectRspMsg {
     public Properties config;
     public ArrayList<String> fileList;
 
-    /** OPTIONAL **/
+    /* EXCEPTION */
     public String error;
 }

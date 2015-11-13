@@ -10,7 +10,7 @@ public class SupportedProperties extends HashMap<String,ArrayList<String>> {
 
     public void addSupportedPropertyValue(String property, String supportedValue){
         if(!this.containsKey(property))
-            this.put(property, new ArrayList<>());
+            this.put(property, new ArrayList<String>());
         this.get(property).add(supportedValue);
     }
 }

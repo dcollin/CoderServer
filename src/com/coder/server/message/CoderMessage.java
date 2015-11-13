@@ -23,13 +23,31 @@ public class CoderMessage {
     public ProjectReqMsg                   ProjectReq;
     public ProjectRspMsg                   ProjectRsp;
 
+    public ProjectConfigureReqMsg          ProjectConfigureReq; //TODO
+    public ProjectConfigureRspMsg          ProjectConfigureRsp; //TODO
+
 
     // File messaging
     public FileCreateReqMsg                FileCreateReq;
-    public FileReqMsg FileReq;
-    public FileRspMsg FileRsp;
+    public FileReqMsg                      FileReq;
+    public FileRspMsg                      FileRsp;
+
+    public FileSaveReqMsg                  FileSaveReq; //TODO
+    public FileSaveRspMsg                  FileSaveRsp; //TODO
+
+    public FileDeleteReqMsg                FileDeleteReq; //TODO
+    public FileDeleteRspMsg                FileDeleteRsp; //TODO
 
 
     // Build and run messaging
+    public BuildProjectReqMsg              BuildProjectReq; //TODO
+    public BuildProjectReqMsp              BuildProjectRsp; //TODO
 
+    public RunProjectReqMsg                RunProjectReq;   //TODO
+    public TerminateRunReqMsg              TerminateRunReq; //TODO
+    public RunProjectReqMsp                RunProjectRsp;   //TODO
+
+    public TerminalInputReqMsg             TerminalInputReq;  //TODO
+    public TerminalInputRspMsg             TerminalInputRsp;  //TODO
+    public TerminalOutputIndMsg            TerminalOutputInd; //TODO
 }

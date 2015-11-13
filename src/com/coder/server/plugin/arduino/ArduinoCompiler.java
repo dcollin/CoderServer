@@ -1,6 +1,5 @@
 package com.coder.server.plugin.arduino;
 
-import com.coder.server.plugin.CoderCompiler.CompileStatus;
 import com.coder.server.plugin.ExecInstance;
 import com.coder.server.plugin.ExecListener;
 import com.coder.server.struct.Project;
@@ -14,6 +13,13 @@ import java.util.logging.Logger;
 
 public class ArduinoCompiler {
 	private static final Logger logger = LogUtil.getLogger();
+	public static enum CompileStatus{
+		COMPILE_SUCCESS,	    //the file was compiled
+		COMPILE_SKIPPED,	    //the file has not been changed and has already been compiled earlier
+		COMPILE_FAILED,		    //the compilation failed
+		FILE_NOT_SOURCE_FILE,	//the file is skipped since it is not a source file
+		FILE_NOT_EXISTS		    //file missing
+	}
 
 	private HashMap<File, Long> lastModificationTimeMap;
 	private ExtendedProperties compileProperties;

@@ -159,6 +159,11 @@ public class CoderConnectionThread implements ThreadedTCPNetworkServerThread {
                         rspMsg.FileRsp.error = "No project set.";
                 }
 
+                //***************************************************
+                //*********** COMPILATION AND EXECUTION *************
+
+
+                // Send Response
                 out.writeObject(rspMsg);
                 out.flush();
             }
