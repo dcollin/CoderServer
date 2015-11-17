@@ -143,7 +143,7 @@ public class CoderConnectionThread implements ThreadedTCPNetworkServerThread {
                             file = FileManager.getInstance().getFile(project, path);
                         }
 
-                        if(rspMsg.FileRsp.error != null) { // Do we already have a error msg?
+                        if(rspMsg.FileRsp.error == null) { // Do we already have a error msg?
                             if (file != null && file.exists()) {
                                 try {
                                     rspMsg.FileRsp.path = file.getName();
