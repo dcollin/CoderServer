@@ -32,11 +32,11 @@ public class CoderMessage {
     public FileReqMsg                      FileReq;
     public FileRspMsg                      FileRsp;
 
-    public FileSaveReqMsg                  FileSaveReq; //TODO
-    public FileSaveRspMsg                  FileSaveRsp; //TODO
+    public FileSaveReqMsg                  FileSaveReq;
+    public FileSaveRspMsg                  FileSaveRsp;
 
-    public FileDeleteReqMsg                FileDeleteReq; //TODO
-    public FileDeleteRspMsg                FileDeleteRsp; //TODO
+    public FileDeleteReqMsg                FileDeleteReq;
+    public FileDeleteRspMsg                FileDeleteRsp;
 
 
     // Build and run messaging

@@ -95,7 +95,7 @@ public class ArduinoProject extends Project implements CoderCompiler{
 		//prop.setProperty("target_board", targetBoard.getName());
 		prop.setProperty("target_port", ""+targetPort);
 		prop.setProperty("target_baud", ""+targetBauderate);
-		return null;
+		return prop;
 	}
 
 	@Override
