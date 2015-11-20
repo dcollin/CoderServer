@@ -7,7 +7,7 @@ public class FileSaveRspMsg {
     public String path;
 
     /* OPTIONAL */
-    public String revision;
+    //public String revision;
 
     /* EXCEPTION */
     public String error;

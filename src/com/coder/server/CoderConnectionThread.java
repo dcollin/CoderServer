@@ -158,6 +158,20 @@ public class CoderConnectionThread implements ThreadedTCPNetworkServerThread {
                     else
                         rspMsg.FileRsp.error = "No project set.";
                 }
+                if(msg.FileSaveReq != null){
+                    rspMsg.FileSaveRsp = new FileSaveRspMsg();
+                    rspMsg.FileSaveRsp.path = msg.FileSaveReq.path;
+                    File file = FileManager.getInstance().
+                            getFile(project, msg.FileSaveReq.path);
+                    if(file.exists() && file.isFile()){
+                        if(file.canWrite())
+                            FileUtil.setContent(file, msg.FileSaveReq.data);
+                        else
+                            rspMsg.FileSaveRsp.error = "Unable to write to file, permission denied.";
+                    }
+                    else
+                        rspMsg.FileSaveRsp.error = "No such file found.";
+                }
 
                 //***************************************************
                 //*********** COMPILATION AND EXECUTION *************
