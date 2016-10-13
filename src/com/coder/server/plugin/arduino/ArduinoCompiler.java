@@ -185,7 +185,7 @@ public class ArduinoCompiler {
 	
 	private int executeCommand(String cmd, ExecListener listener){
 		int exitCode = 0;
-		OSAbstractionLayer.runCommand(cmd);
+		OSAbstractionLayer.exec(cmd);
 		return exitCode;
 	}
 

@@ -77,7 +77,7 @@ public class ProjectManager implements Iterable<Project>{
         newInstance.addProjectType(new GenericProjectType());
         PluginManager<?> projPlugins = new PluginManager<>();
         for(PluginData plugin : projPlugins){
-            for(Iterator<CoderProjectType> it = plugin.getIterator(CoderProjectType.class); it.hasNext();){
+            for(Iterator<CoderProjectType> it = plugin.getObjectIterator(CoderProjectType.class); it.hasNext();){
                 CoderProjectType p = it.next();
                 logger.info("Found project type: " + p.getName());
                 newInstance.addProjectType(p);

@@ -10,11 +10,13 @@
 	
 	<!--common properties-->
 	<property name="gitRoot" value="." />
-	<property name="releaseDir" value="${gitRoot}/release"/>
 	<property name="srcDir" value="${gitRoot}/src" />
-	<property name="libDir" value="${gitRoot}/lib" />
-	<property name="buildDir" value="${gitRoot}/build" />
 	<property name="testDir" value="${gitRoot}/test" />
+	<property name="libDir" value="${gitRoot}/lib" />
+
+	<property name="buildRoot" value="${gitRoot}/build" />
+	<property name="releaseDir" value="${buildRoot}/release"/>
+	<property name="buildDir" value="${buildRoot}/production" />
 	<property name="pluginDir" value="${releaseDir}/plugins" />
 	
 	<!--CodeServer properties-->
